@@ -3,10 +3,10 @@ const Router = express.Router();
 const userController = require("../controllers/user/userCreate");
 
 // Router.route("/verifyOTP").post(authController.verifyOTP);
-// Router.route("/login").post(authController.login);
+Router.route("/login").post(userController.login);
 Router.route("/signup").post(userController.signup);
 // Router.route("/logout").post(authController.logout);
-// Router.route("/forgetPassword").put(authController.forgetPassword);
+Router.route("/forgetPassword").put(userController.forgetPassword);
 // Router.route("/socialLogin").post(authController.socialLogin);
 
 //=================

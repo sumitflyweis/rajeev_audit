@@ -34,6 +34,9 @@ const userSchema = new mongoose.Schema({
     minlength: 8,
     select: false,
   },
+  confirmpassword:{
+    type:String
+  },
   dateOfBirth: {
     type: String,
   },

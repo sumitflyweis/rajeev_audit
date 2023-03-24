@@ -128,49 +128,50 @@ exports.signup = async (req, res) => {
 // };
 
 
-// exports.login = catchAsync(async (req, res, next) => {
-//   const { input, password } = req.body;
-//   if (!input || !password) {
-//     return next(new AppError("Please provide e-mail and password!", 400));
-//   }
+exports.login = async (req, res, next) => {
+  
+  const { input, password } = req.body;
+  if (!input || !password) {
+    return res.status(400).send("Please provide e-mail and password!");
+  }
 
-//   if (validator.isEmail(input)) {
-//     // 1) Check if email and password exists.
-//     var email = input;
+  if (validator.isEmail(input)) {
+    // 1) Check if email and password exists.
+    var email = input;
 
-//     // 2) Check if the user exists && password is correct.
-//     const user = await User.findOne({ email: email }).select("+password");
-//     console.log(user.password);
+    // 2) Check if the user exists && password is correct.
+    const user = await User.findOne({ email: email }).select("+password");
+    console.log(user.password);
 
-//     if (!user || !(await user.correctPassword(password, user.password))) {
-//       return next(new AppError("Incorrect Email or password", 401));
-//     }
+    if (!user /*|| !(await user.correctPassword(password, user.password))*/) {
+      return res.status(400).send("Incorrect Email");
+    }
 
-//     const otp = Math.floor(Math.random() * 10000 + 1);
-//     console.log(otp);
-//     user.otp = otp;
-//     await user.save();
-//     console.log("USer", user);
+    const otp = Math.floor(Math.random() * 10000 + 1);
+    console.log(otp);
+    user.otp = otp;
+    await user.save();
+    console.log("USer", user);
 
-//     // 3) If everything ok, send token to client
-//     createSendToken(user, 200, res);
-//   } else {
-//     var phone = input;
-//     const user = await User.findOne({ phone: phone }).select("+password");
-//     console.log(user.password);
-//     if (!user || !(await user.correctPassword(password, user.password))) {
-//       return next(new AppError("Incorrect Phone or password", 401));
-//     }
-//     const otp1 = Math.floor(Math.random() * 10000 + 1);
-//     console.log("OTP", otp1);
-//     user.otp = otp1;
+    // 3) If everything ok, send token to client
+    createSendToken(user, 200, res);
+  } else {
+    var phone = input;
+    const user = await User.findOne({ phone: phone }).select("+password");
+    console.log(user.password);
+    if (!user /*|| !(await user.correctPassword(password, user.password))*/) {
+      return res.status(400).send("Incorrect Phone");
+    }
+    const otp1 = Math.floor(Math.random() * 10000 + 1);
+    console.log("OTP", otp1);
+    user.otp = otp1;
 
-//     await user.save();
-//     console.log("USer", user);
+    await user.save();
+    console.log("USer", user);
 
-//     createSendToken(user, 200, res);
-//   }
-// });
+    createSendToken(user, 200, res);
+  }
+}
 
 // exports.protect = catchAsync(async (req, res, next) => {
 //   // 1) Getting Token & check if its there!
@@ -262,12 +263,12 @@ exports.signup = async (req, res) => {
 
 exports.forgetPassword = async (req, res, next) => {
   try {
+    const requiredotp = await User.findOne({ email:req.body.email });
+    console.log(requiredotp.email)
+if(!requiredotp || requiredotp.length == 0) return res.status(400).send("incorrect email")
 
-          const requiredotp = await User.findOne({ email:req.body.email });
-          console.log("hi")
-         if(requiredotp.email){
-         if (req.body.password !== requiredotp.otp) return next(createError(400, "wrong otp"));
-      
+  if (req.body.password !== req.body.confirmpassword) return next(createError(400, "password not match"));
+         
     const user = await User.findOneAndUpdate(
       {
         email: req.body.email,
@@ -277,7 +278,7 @@ exports.forgetPassword = async (req, res, next) => {
     );
     console.log(user);
     return res.status(200).send({ msg: true, user });
-  } }catch (error) {
+   }catch (error) {
     console.log(error);
     return res.status(500).json({
       errorName: error.name,
@@ -315,4 +316,4 @@ exports.forgetPassword = async (req, res, next) => {
 //     httpOnly: true,
 //   });
 //   res.status(200).json({ status: "success" });
-// };
+// }
