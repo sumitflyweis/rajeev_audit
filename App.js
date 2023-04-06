@@ -17,8 +17,18 @@ app.get('/', async (req, res, next) => {
 })
 
 const cookieParser = require("cookie-parser");
-//   const adminRouter = require("./routes/adminRoutes");
+//const adminRouter = require("./routes/adminRoutes");
 const userRouter = require("./route/userCreate");
+//const allotedSites = require("./route/allotedSites");
+const adminLogin = require("./route/adminLogin");
+const help = require("./route/help")
+const checkSheet = require("./route/CheckSheet")
+const sites = require("./route/sites")
+const audit = require("./route/audit")
+const inspector = require("./route/inspector")
+const reviewer = require("./route/reviewer")
+const notification = require("./route/notification") 
+
 
 app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
@@ -26,6 +36,15 @@ app.use(cookieParser());
 
 //  ROUTES
 app.use("/api/v1/user", userRouter);
+//app.use("/api/v1/allotedSites",allotedSites)
+app.use("/api/v1/adminLogin",adminLogin)
+app.use("/api/v1/help",help)
+app.use("/api/v1/CheckSheet",checkSheet)
+app.use("/api/v1/sites",sites)
+app.use("/api/v1/audit",audit)
+app.use("/api/v1/inspector",inspector)
+app.use("/api/v1/reviewer",reviewer)
+app.use("/api/v1/notification",notification)
 
 
 
@@ -48,7 +67,7 @@ app.use(function (error, req, res, next) {
             errorName: error.name,
             message: error.message
         })
-    }
+    }  
 })
 
 module.exports = app;

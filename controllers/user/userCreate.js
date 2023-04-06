@@ -2,11 +2,12 @@ const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const User = require("../../model/userCreate");
 const bcrypt = require("bcryptjs");
+const JWT_EXPIRES_IN = "1d"
 require("dotenv").config();
 
 const signToken = (id) => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
+    expiresIn: JWT_EXPIRES_IN,
   }); 
 };
 
@@ -136,22 +137,26 @@ exports.login = async (req, res, next) => {
   }
 
   if (validator.isEmail(input)) {
-    // 1) Check if email and password exists.
+    
     var email = input;
 
-    // 2) Check if the user exists && password is correct.
     const user = await User.findOne({ email: email }).select("+password");
     console.log(user.password);
 
     if (!user /*|| !(await user.correctPassword(password, user.password))*/) {
       return res.status(400).send("Incorrect Email");
     }
-
-    const otp = Math.floor(Math.random() * 10000 + 1);
-    console.log(otp);
-    user.otp = otp;
-    await user.save();
-    console.log("USer", user);
+        const isMatch = bcrypt.compareSync(password, user.password);
+    console.log(isMatch)
+        if (!isMatch) {
+          return res.status(404).send("Invalid email or password");
+        }
+   
+    // const otp = Math.floor(Math.random() * 10000 + 1);
+    // console.log(otp);
+    // user.otp = otp;
+    // await user.save();
+    // console.log("USer", user);
 
     // 3) If everything ok, send token to client
     createSendToken(user, 200, res);
