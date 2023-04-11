@@ -28,6 +28,9 @@ const audit = require("./route/audit")
 const inspector = require("./route/inspector")
 const reviewer = require("./route/reviewer")
 const notification = require("./route/notification") 
+const terms = require("./route/termsAndCondition")
+const privacy =require('./route/privacy')
+const reports = require('./route/reports')
 
 
 app.use(express.json());
@@ -45,6 +48,9 @@ app.use("/api/v1/audit",audit)
 app.use("/api/v1/inspector",inspector)
 app.use("/api/v1/reviewer",reviewer)
 app.use("/api/v1/notification",notification)
+app.use("/api/v1/terms",terms)
+app.use("/api/v1/privacy",privacy)
+app.use("/api/v1/reports",reports)
 
 
 

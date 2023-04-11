@@ -5,9 +5,9 @@ const help = express.Router();
 
 //ADMIN
 help.post("/helpAdmin", helpAdmin);
-// help.get("/get/help",gethelp)
-// help.put("/updateHelpAdmin/:id", updateHelpAdmin);
-// help.delete("/deleteHelpAdmin/:id", deleteHelpAdmin);
+help.get("/get/help",gethelp)
+help.put("/updateHelpAdmin/:id", updateHelpAdmin);
+help.delete("/deleteHelpAdmin/:id", deleteHelpAdmin);
 
 //CUSTOMER
 // help.get('/getHelpBycustomer',getHelpBycustomer)

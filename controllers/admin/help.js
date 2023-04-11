@@ -25,22 +25,37 @@ module.exports.helpAdmin = async (req,res) => {
 // };
 
 // Read all help documents
-module.exports.gethelp = () => {
-  return HelpModel.find({}).exec();
-};
+module.exports.gethelp = async (req, res) => {
+  try{
+  const data = await HelpModel.find()
+  return res.status(200).send(data)
+}catch(error){
+  res.status(400).json({ message: error.message });
+}
+}
 
 // Update a help document by ID
-module.exports.updateHelpAdmin = (id, name, email, phone, enquiry) => {
-  return HelpModel.findByIdAndUpdate(id, {
-    name: name,
-    email: email,
-    phone: phone,
-    enquiry: enquiry,
+module.exports.updateHelpAdmin = async (req, res) => {
+  try{
+  const data = await HelpModel.findByIdAndUpdate({_id:req.params.id}, {
+    name: req.body.name,
+    email: req.body.email,
+    phone: req.body.phone,
+    enquiry: req.body.enquiry,
   }).exec();
-};
+  return res.status(200).send({msg:"updated",data})
+}catch{
+  res.status(400).json({ message: error.message });
+}
+}
 
 // Delete a help document by ID
-module.exports.deleteHelpAdmin = (id) => {
-  return HelpModel.findByIdAndDelete(id).exec();
-};
+module.exports.deleteHelpAdmin = async (req, res) => {
+try{
+  await HelpModel.findByIdAndDelete({_id:req.params.id}).exec();
+  return res.status(200).send({msg:"deleted"})
+}catch{
+  res.status(400).json({ message: error.message });
+}
+}
 
