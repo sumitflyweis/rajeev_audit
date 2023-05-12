@@ -3,11 +3,13 @@ const morgan = require('morgan');
 const cors = require('cors');
 const createError = require('http-errors');
 const express = require('express');
- const languages = require('./src/route/different_Language');
- const auth = require('./src/route/authEmployee&Owner')
-//  const driverr = require('./src/route/driver')
+const languages = require('./src/route/different_Language');
+const auth = require('./src/route/authEmployee&Owner')
+const driverr = require('./src/route/driver')
 const locationn = require('./src/route/location')
 const categoryy   = require('./src/route/category')
+const driver_experience = require('./src/route/driver_experience')
+const vehicletype =  require('./src/route/vehicletype')
 
 
 
@@ -21,9 +23,11 @@ app.use(cors());
 
  app.use('/api/v1/languages', languages);
  app.use('/api/v1/auth', auth);
-//  app.use('/api/v1/driverr',driverr)
+app.use('/api/v1/driverr',driverr)
 app.use('/api/v1/locationn',locationn)
 app.use('/api/v1/categoryy',categoryy)
+app.use('/api/v1/driver_experience',driver_experience)
+app.use('/api/v1/vehicletype',vehicletype)
 
 
 
