@@ -55,6 +55,18 @@ module.exports.login = async (req, res) => {
   }
 };
 
+
+exports.getAllAdmin = async (req, res) => {
+  try {
+    const audits = await Admin.find();
+    res.status(200).json({ success: true, data: audits });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+
+
 // UPDATE
 module.exports.updateadmin = async (req, res) => {
   const { id } = req.params;

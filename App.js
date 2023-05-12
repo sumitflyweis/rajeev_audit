@@ -10,11 +10,6 @@ app.use(morgan('dev'));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
 
-app.get('/', async (req, res, next) => {
-    return res.status(200).json({
-        message: "Welcome to api portal"
-    })
-})
 
 const cookieParser = require("cookie-parser");
 //const adminRouter = require("./routes/adminRoutes");
@@ -31,6 +26,9 @@ const notification = require("./route/notification")
 const terms = require("./route/termsAndCondition")
 const privacy =require('./route/privacy')
 const reports = require('./route/reports')
+const client = require('./route/client')
+const total = require('./route/total')
+
 
 
 app.use(express.json());
@@ -51,6 +49,9 @@ app.use("/api/v1/notification",notification)
 app.use("/api/v1/terms",terms)
 app.use("/api/v1/privacy",privacy)
 app.use("/api/v1/reports",reports)
+app.use("/api/v1/client",client)
+app.use("/api/v1/total",total)
+
 
 
 

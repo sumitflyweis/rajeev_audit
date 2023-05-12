@@ -1,15 +1,62 @@
 const Site = require("../../model/sites");
+const clientModel = require("../../model/client");
+const CheckSheet = require("../../model/CheckSheet");
 
-// CREATE
-module.exports.createSite = async (req, res) => {
+// Controller function to create a site
+exports.createSite = async (req, res) => {
   try {
-    const site = new Site(req.body);
-    const result = await site.save();
-    res.status(201).json(result);
+    const {
+      QA_CA_ID,
+      siteId,
+      siteName,
+      circle,
+      email,
+      location, 
+      address,   
+      dueDate,
+      dateAuditScheduled,
+      dateAllocated,
+      InspectorName,
+      dateActualAudit,
+      reviewerName,
+      dateReviewed,
+      DateClient, 
+      uploadFileFromDevice,
+      
+    } = req.body; // Destructure request body
+   
+
+    const newSite = new Site({
+      QA_CA_ID,
+      siteName,
+      email,
+      circle,
+      location,
+      address,   
+      dueDate,
+      dateAuditScheduled,
+      dateAllocated,
+      InspectorName,
+      dateActualAudit,
+      reviewerName,
+      dateReviewed,
+      DateClient, 
+      uploadFileFromDevice,
+
+    });
+
+    const savedSite = await newSite.save(); // Save the new site to siteModel
+    console.log(savedSite. _id)
+    const checkSheet = await CheckSheet.create({siteId:savedSite. _id, siteName:savedSite.siteName})
+     
+    
+    res.status(201).json({ site: savedSite,checkSheet:checkSheet }); // Send the saved site as JSON response with 201 status code
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(500).json({ error: "Failed to create site" }); // Handle any error that occurs
   }
 };
+
+
 
 // READ ALL
 module.exports.getAllSites = async (req, res) => {
@@ -34,46 +81,24 @@ module.exports.getSite = async (req, res) => {
   }
 };
 
-// UPDATE
-module.exports.updateSite = async (req, res) => {
+
+
+
+exports.updateSite = async (req, res) => {
   try {
-    const site = await Site.findById(req.params.id);
-    if (site == null) {
-      return res.status(404).json({ message: "Cannot find site" });
+    const site = await Site.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!site) {
+      return res.status(404).json({ message: 'Site not found' });
     }
-    if (req.body.QA_CA_ID != null) {
-      site.QA_CA_ID = req.body.QA_CA_ID;
-    }
-    if (req.body.siteId != null) {
-      site.siteId = req.body.siteId;
-    }
-    if (req.body.circle != null) {
-      site.circle = req.body.circle;
-    }
-    if (req.body.location != null) {
-      site.location = req.body.location;
-    }
-    if (req.body.address != null) {
-      site.address = req.body.address;
-    }
-    if (req.body.clientName != null) {
-      site.clientName = req.body.clientName;
-    }
-    if (req.body.date != null) {
-      site.date = req.body.date;
-    }
-    if (req.body.allocateSiteToInspector != null) {
-      site.allocateSiteToInspector = req.body.allocateSiteToInspector;
-    }
-    if (req.body.uploadFileFromDevice != null) {
-        site.uploadFileFromDevice = req.body.uploadFileFromDevice;
-      }
-    const updatedSite = await site.save();
-    res.json(updatedSite);
+    res.json(site);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 };
+
+
+
+
 
 // DELETE
 module.exports.deleteSite = async (req, res) => {
@@ -87,4 +112,22 @@ module.exports.deleteSite = async (req, res) => {
   } catch (err) {
     return res.status(400).json({ message: err.message });
   }
-}
+};
+
+exports.getAllClientNames = async (req, res) => {
+  try {
+    // Fetch all documents from the site collection in the database
+    const sites = await Site.find();
+
+    // Extract client names from the fetched documents
+    const clientNames = sites.map((site) => site.clientName);
+
+    // Send the client names as the response
+    res.status(200).json(clientNames);
+  } catch (err) {
+    // Handle any errors that occur during the database operation
+    console.error("Error getting client names:", err);
+    res.status(500).json({ error: "Failed to get client names" });
+  }
+};
+

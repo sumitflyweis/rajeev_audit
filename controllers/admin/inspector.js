@@ -31,6 +31,30 @@ exports.getAllInspectors = async (req, res) => {
   }
 };
 
+
+exports.isSiteAllocated = async (req, res) => {
+  const { inspectorId, siteId } = req.params;
+
+  try {
+    const inspector = await Inspector.findOne({ inspectorId });
+ console.log(inspector)
+    if (!inspector) {
+      return res.status(404).json({ error: 'Inspector not found' });
+    }
+
+    if (inspector.siteAllocated && inspector.siteId == siteId) {
+      return res.status(200).json({ siteAllocated: true });
+    } else {
+      return res.status(200).json({ siteAllocated: false });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+};
+
+
+
 exports.updateInspectorById = async (req, res) => {
   try {
     const inspector = await Inspector.findOneAndUpdate(

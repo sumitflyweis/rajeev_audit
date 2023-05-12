@@ -1,14 +1,18 @@
 const mongoose = require("mongoose");
+const objectid = mongoose.Schema.Types.ObjectId
 
 const inspectorSchema = mongoose.Schema({
-  inspectorId: {
-    type: String,
-  },
+ 
   inspectorName: {
     type: String,
   },
+  accessrequest:{
+    type:Boolean,
+    default:false
+  },
   siteId: {
-    type: String,
+    type: objectid,
+    ref:"site"
   },
   siteName: {
     type: String,
@@ -19,6 +23,20 @@ const inspectorSchema = mongoose.Schema({
   inspectionDate: {
     type: String,
   },
+  reportstatus:{
+    type:String,
+    enum:['yes','no']
+  },
+  siteAllocated:{
+    type:Boolean,
+    //default:false
+  },
+  role: {
+    type: String,
+    //enum: ["reviewer", "admin","auditor"],
+    default: "inspector",
+  },
+
 });
 
 const inspectorModel = mongoose.model("inspector", inspectorSchema);

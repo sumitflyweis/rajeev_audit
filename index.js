@@ -19,6 +19,13 @@ mongoose
     console.log("DATABASE connected!! 👍");
   });
 
+
+  app.get('/home', async (req, res, next) => {
+    return res.status(200).json({
+        message: "Welcome to api portal"
+    })
+})
+
 const port = process.env.PORT || 3004;
 
 const server = app.listen(port, () => {
