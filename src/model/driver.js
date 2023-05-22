@@ -5,7 +5,9 @@ const driverSchema = mongoose.Schema(
     authid: {
       type: objectid,
       ref: "Auth_Employee_Owner",
-      default: "",
+    },
+    mobileNumber: {
+      type: String,
     },
     gender: {
       type: String,
@@ -26,7 +28,6 @@ const driverSchema = mongoose.Schema(
     location: {
       type: objectid,
       ref: "location",
-      default: "",
     },
     exactAddress: {
       type: String,
@@ -35,12 +36,10 @@ const driverSchema = mongoose.Schema(
     category: {
       type: objectid,
       ref: "category",
-      default: "",
     },
     language: {
       type: objectid,
       ref: "different_Languages",
-      default: "",
     },
     militaryService: {
       type: String,
@@ -54,44 +53,72 @@ const driverSchema = mongoose.Schema(
       type: String,
       default: "",
     },
+    email: {
+      type: String,
+      default: "",
+    },
+    interest: {
+      type: String,
+      default: "",
+    },
+    ///////////////////////////
 
-    ////////////////////////////////////
-
-    companyName: {
-      type: String,
-      default: "",
-    },
-    jobTitle: {
-      type: String,
-      default: "",
-    },
-    vehicletype: {
-      type: objectid,
-      ref: "vehicletype",
-      default: "",
-    },
-    starttime: {
-      type: String,
-      default: "",
-    },
-    endtime: {
-      type: String,
-      default: "",
-    },
-    status: {
-      type: String,
-      default: "",
-    },
-
-    /////////////////////
-
+    experience: [
+      {
+        companyName: {
+          type: String,
+          default: "",
+        },
+        jobTitle: {
+          type: String,
+          default: "",
+        },
+        vehicletype: {
+          type: objectid,
+          ref: "vehicletype",
+        },
+        starttime: {
+          type: String,
+          default: "",
+        },
+        endtime: {
+          type: String,
+          default: "",
+        },
+        Status: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
+    ////////////////////////////////
     frontImage: {
       type: String,
-      default: "",
+      default:
+        "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.simplilearn.com%2Fimage-processing-article&psig=AOvVaw1kvCFmU96sIc0v4VgaPKW8&ust=1682860597316000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCODu37iWz_4CFQAAAAAdAAAAABAE",
     },
     backImage: {
       type: String,
+      default:
+        "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.simplilearn.com%2Fimage-processing-article&psig=AOvVaw1kvCFmU96sIc0v4VgaPKW8&ust=1682860597316000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCODu37iWz_4CFQAAAAAdAAAAABAE",
+    },
+    ////////////////////////////////////
+    photoUpload: {
+      type: String,
+      default: "https://tinyurl.com/5ahwwkv6",
+    },
+    //////////////////////////
+    jobServicesId: {
+      type: objectid,
+      ref: "jobService",
+    },
+    employerAction: {
+      type: String,
       default: "",
+    },
+    viewed: {
+      type: Boolean,
+      default: false,
     },
   },
   {

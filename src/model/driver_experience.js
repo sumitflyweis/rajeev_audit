@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 const objectid = mongoose.Schema.Types.ObjectId;
 const driver_experienceSchema = mongoose.Schema(
   {
+
+    authid: {
+      type: objectid,
+      ref: "Auth_Employee_Owner",
+      default: "",
+    },
     driverId:{
         type:objectid,
         ref:"driver"
@@ -22,7 +28,7 @@ const driver_experienceSchema = mongoose.Schema(
     endtime:{
         type:String
     },
-    status:{
+    Status:{
         type:String
     }
   },
