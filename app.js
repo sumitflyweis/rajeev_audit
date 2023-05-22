@@ -31,6 +31,12 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
 
+
+app.get('/', (req,res) =>{
+  res.status(200).json({
+      message: "Working"
+  })
+})
 app.use("/api/v1/languages", languages);
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/driverr", driverr);
