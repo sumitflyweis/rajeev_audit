@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const serverless = require('serverless-http')
+// const serverless = require('serverless-http')
 const app = require('./app');
 const dotenv = require('dotenv');
 
@@ -18,6 +18,6 @@ app.listen(process.env.PORT || 3006, async () => {
     console.log(`listening on port ${process.env.PORT || 3006}`);
 })
 
-module.exports = {
-    handler: serverless(app)
-}
+// module.exports = {
+//     handler: serverless(app)
+// }
