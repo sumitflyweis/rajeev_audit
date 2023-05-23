@@ -22,7 +22,6 @@
     "nodemon": "^2.0.22",
     "razorpay": "^2.8.6",
     "serverless-http": "^3.2.0",
-    "twilio": "^4.11.0",
-    "vercel": "^29.3.6"
+    "twilio": "^4.11.0"
   }
 }
