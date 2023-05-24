@@ -1,22 +1,26 @@
-const app = require("./App");
+const express = require('express');
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-dotenv.config();
-const serverless = require("serverless-http");
+const cors = require('cors');
+const app = express();
+const http = require('http');
+//const server = http.createServer(app);
+const bodyparser = require("body-parser");
 
-process.on("uncaughtException", (err) => {
-  console.log("unhandled Rejection! Shutting down...! hello");
-  console.log(err.name, err.message);
-  process.exit(1); // '1' stands for uncaught exception & '0' for success.
-});
+const serverless = require("serverless-http");
+require("dotenv").config();
+app.use(cors()); 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const port = process.env.PORT || 3004;
 
 mongoose
-  .connect("mongodb+srv://node3:node3@cluster0.tcw8z5q.mongodb.net/audit_app?retryWrites=true&w=majority", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+  .connect("mongodb+srv://node3:node3@cluster0.tcw8z5q.mongodb.net/audit_app?retryWrites=true&w=majority")
+  .then(() => {
+    console.log("Db conneted succesfully");
   })
-  .then((con) => {
-    console.log("DATABASE connected!! 👍");
+  .catch((err) => {
+    console.log(err);
   });
 
 
@@ -26,19 +30,42 @@ mongoose
     })
 })
 
-const port = process.env.PORT || 3004;
+
+app.use(express.json());
+app.use(express.static(`${__dirname}/public`));
+app.use(cookieParser());
+
+
+//  ROUTES
+app.use("/api/v1/user",require("./route/userCreate"));
+//app.use("/api/v1/allotedSites",allotedSites)
+app.use("/api/v1/adminLogin", require("./route/adminLogin"))
+app.use("/api/v1/help",require("./route/help"))
+app.use("/api/v1/CheckSheet",require("./route/CheckSheet"))
+app.use("/api/v1/sites", require("./route/sites"))
+app.use("/api/v1/audit",require("./route/audit"))
+app.use("/api/v1/inspector",require("./route/inspector"))
+app.use("/api/v1/reviewer",require("./route/reviewer"))
+app.use("/api/v1/notification",require("./route/notification"))
+app.use("/api/v1/terms",require("./route/termsAndCondition"))
+app.use("/api/v1/privacy",require('./route/privacy'))
+app.use("/api/v1/reports",require('./route/reports'))
+app.use("/api/v1/client",require('./route/client'))
+app.use("/api/v1/total",require('./route/total'))
+
+
+// app.all("*", (req, res, next) => {
+//   res.status(404).json({
+//     status: "fail",
+//     message: `Can't find the ${req.url} on this server!`,
+//   });
+// });
+
 
 const server = app.listen(port, () => {
   console.log(`Listening on Port ${port}`);
 });
 
-process.on("unhandledRejection", (err) => {
-  console.log("unhandled Rejection! Shutting down....!hi");
-  console.log(err.name, err.message);
-  server.close(() => {
-    process.exit(1); // '1' stands for uncaught exception & '0' for success.s
-  });
-});
 
 module.exports = {
   handler: serverless(app),
