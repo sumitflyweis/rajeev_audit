@@ -13,9 +13,6 @@ const clientSchema = mongoose.Schema({
   designation: {
     type: String,
   },
-  company: {
-    type: String,
-  },
   circle_state: {
     type: String,
   },
