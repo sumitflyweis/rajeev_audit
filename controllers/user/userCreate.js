@@ -98,6 +98,18 @@ module.exports.getAll = async (req, res) => {
   }
 };
 
+module.exports.getUserById = async (req, res) => {
+  try {
+    const site = await User.findById(req.params.id);
+    if (site == null) {
+      return res.status(404).json({ message: "Cannot find user" });
+    }
+    res.json({msg:site});
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 
 exports.updateUser = async (req, res) => {
   try {
