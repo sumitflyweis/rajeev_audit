@@ -99,6 +99,19 @@ module.exports.getAll = async (req, res) => {
 };
 
 
+exports.updateUser = async (req, res) => {
+  try {
+    const site = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!site) {
+      return res.status(404).json({ message: 'user not found' });
+    }
+    res.json(site);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+
 // exports.socialLogin = async (req, res) => {
 //   try {
 //     const { google_id, name, email } = req.body;
