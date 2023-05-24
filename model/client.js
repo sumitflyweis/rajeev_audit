@@ -1,16 +1,30 @@
 const mongoose = require("mongoose");
 
 const clientSchema = mongoose.Schema({
-  clientName: { type: String },
-  email: { type: String },
-  phone:{type: String},
-  // siteId: {
-  //   type: String,
-  // },
-  // siteName: {
-  //   type: String,
-  // },
-    
+  clientName: {
+    type: String,
+  },
+  email: {
+    type: String,
+  },
+  phone: {
+    type: String,
+  },
+  designation: {
+    type: String,
+  },
+  company: {
+    type: String,
+  },
+  circle_state: {
+    type: String,
+  },
+  representativeName: {
+    type: String,
+  },
+  siteId: {
+    type: String,
+  },
 });
 
 const clientModel = mongoose.model("client", clientSchema);
