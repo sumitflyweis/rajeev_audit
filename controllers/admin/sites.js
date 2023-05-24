@@ -7,12 +7,12 @@ exports.createSite = async (req, res) => {
   try {
     const {
       QA_CA_ID,
+      Client_email,
       siteId,
       siteName,
-      circle,
-      email,
+      circle_state,
       location, 
-      address,   
+      site_address,   
       dueDate,
       dateAuditScheduled,
       dateAllocated,
@@ -20,6 +20,7 @@ exports.createSite = async (req, res) => {
       dateActualAudit,
       reviewerName,
       dateReviewed,
+      clientRepName,
       DateClient, 
       uploadFileFromDevice,
       
@@ -28,11 +29,12 @@ exports.createSite = async (req, res) => {
 
     const newSite = new Site({
       QA_CA_ID,
+      Client_email,
+      siteId,
       siteName,
-      email,
-      circle,
-      location,
-      address,   
+      circle_state,
+      location, 
+      site_address,   
       dueDate,
       dateAuditScheduled,
       dateAllocated,
@@ -40,17 +42,16 @@ exports.createSite = async (req, res) => {
       dateActualAudit,
       reviewerName,
       dateReviewed,
+      clientRepName,
       DateClient, 
       uploadFileFromDevice,
-
     });
 
     const savedSite = await newSite.save(); // Save the new site to siteModel
-    console.log(savedSite. _id)
-    const checkSheet = await CheckSheet.create({siteId:savedSite. _id, siteName:savedSite.siteName})
+    // console.log(savedSite. _id)
+    // const checkSheet = await CheckSheet.create({siteId:savedSite. _id, siteName:savedSite.siteName})
      
-    
-    res.status(201).json({ site: savedSite,checkSheet:checkSheet }); // Send the saved site as JSON response with 201 status code
+    res.status(201).json({ site: savedSite }); // Send the saved site as JSON response with 201 status code
   } catch (err) {
     res.status(500).json({ error: "Failed to create site" }); // Handle any error that occurs
   }
@@ -62,11 +63,12 @@ exports.createSite = async (req, res) => {
 module.exports.getAllSites = async (req, res) => {
   try {
     const sites = await Site.find();
-    res.json(sites);
+    res.json({msg:sites});
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 // READ ONE
 module.exports.getSite = async (req, res) => {
@@ -75,7 +77,7 @@ module.exports.getSite = async (req, res) => {
     if (site == null) {
       return res.status(404).json({ message: "Cannot find site" });
     }
-    res.json(site);
+    res.json({msg:site});
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }

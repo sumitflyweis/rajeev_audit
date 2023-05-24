@@ -4,67 +4,71 @@ const objectid = mongoose.Schema.Types.ObjectId;
 const siteSchema = mongoose.Schema({
   QA_CA_ID: {
     type: String,
+    default:""
+  },
+   Client_email: {
+    type: String,
+    default:""
+  },
+  circle_state: {
+    type: String,
+    default:""
+  },
+  location:{
+    type:String,
+    default:""
+  },
+  siteId:{
+    type:String,
+    default:""
   },
   siteName: {
     type: String,
+    default:""
   },
-  email: {
+ site_address: {
     type: String,
+    default:""
   },
-  circle: {
+   dateAllocated: {
     type: String,
-  },
-
-  location:{
-    type:String
-  },
-
-  // longitude: {
-  //   type: String,
-  // },
-  // latitude: {
-  //   type: String,
-  // },
-
-  address: {
-    type: String,
-  },
-  // clientId: {
-  //   type: objectid,
-  //   ref: "client",
-  // },
-  // clientName: {
-  //   type: String,
-  // },
-  dateAllocated: {
-    type: String,
+    default:""
   },
   dueDate: {
     type: String,
+    default:""
   },
   dateAuditScheduled: {
     type: String,
+    default:""
   },
   InspectorName: {
     type: String,
+    default:""
   },
   dateActualAudit: {
     type: String,
+    default:""
   },
   reviewerName: {
     type: String,
+    default:""
   },
   dateReviewed: {
     type: String,
+    default:""
   },
-  // clientRepName: {
-  //   type: String,
-  // },
+  clientRepName: {
+    type: String,
+    default:""
+  },
   DateClient: {
     type: String,
+    default:""
   },
   uploadFileFromDevice: {
     type: String,
+    default:""
   },
 });
 

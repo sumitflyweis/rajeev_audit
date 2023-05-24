@@ -87,30 +87,7 @@ const userSchema = new mongoose.Schema({
 
   ////////////////////////////////////////////////
 
-  clientName: {
-    type: String,
-    default:""
-  },
-  designation: {
-    type: String,
-    default:""
-  },
-  company: {
-    type: String,
-    default:""
-  },
-  circle_state: {
-    type: String,
-    default:""
-  },
-  representativeName: {
-    type: String,
-    default:""
-  },
-  siteId: {
-    type: String,
-    default:""
-  },
+ 
 });
 
 
