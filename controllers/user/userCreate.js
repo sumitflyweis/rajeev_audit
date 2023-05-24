@@ -89,6 +89,16 @@ exports.signup = async (req, res) => {
 
 
 
+module.exports.getAll = async (req, res) => {
+  try {
+    const sites = await User.find();
+    res.json(sites);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
 // exports.socialLogin = async (req, res) => {
 //   try {
 //     const { google_id, name, email } = req.body;
