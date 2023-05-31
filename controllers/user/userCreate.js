@@ -67,11 +67,21 @@ module.exports.verifyOTP = async (req, res) => {
   }
 };
 
+
 exports.signup = async (req, res) => {
     try{
     const email = await User.findOne({email:req.body.email})
     if(email) return res.status(200).send({msg:"email already present "})
-  const newUser = await User.create(req.body);
+  
+    const newUser = await User.create(req.body);
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword1 = await bcrypt.hash(req.body.password, salt);
+    const hashedPassword2 = await bcrypt.hash(req.body.confirmpassword, salt);
+
+  newUser.password =  hashedPassword1
+  newUser.confirmpassword = hashedPassword2
+  await newUser.save()
   //const url = `${req.protocol}://${req.get("host")}/me`;
   console.log(newUser);
  return res .status(200).send({msg:"true",newUser})
@@ -302,30 +312,73 @@ exports.login = async (req, res, next) => {
 // // });
 
 exports.forgetPassword = async (req, res, next) => {
-  try {
-    const requiredotp = await User.findOne({ email:req.body.email });
-    console.log(requiredotp.email)
-if(!requiredotp || requiredotp.length == 0) return res.status(400).send("incorrect email")
+   const { email } = req.body;
 
-  if (req.body.password !== req.body.confirmpassword) return next(createError(400, "password not match"));
-         
-    const user = await User.findOneAndUpdate(
-      {
-        email: req.body.email,
-      },
-      { password: bcrypt.hashSync(req.body.password, 8) },
-      { new: true }
-    );
-    console.log(user);
-    return res.status(200).send({ msg: true, user });
-   }catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      errorName: error.name,
-      message: error.message,
+  try {
+    // Check if the admin exists
+    const admin = await User.findOne({ email });
+    if (!admin) return res.status(404).json({ message: " not found" });
+
+    // Generate a random password
+    //const newPassword = password//Math.random().toString(36).slice(-8);
+
+    // Hash the new password
+    const salt = await bcrypt.genSalt(10);
+    
+    const hashedPassword = await bcrypt.hash(admin.password, salt);
+    console.log("hi")
+    const hashedPassword2 = await bcrypt.hash(admin.confirmpassword, salt);
+   
+   
+    // Save the updated admin object to the database
+    
+    admin.password =  hashedPassword
+    admin.confirmpassword = hashedPassword2
+    const updatedAdmin = await admin.save();
+
+    // Send password reset email
+    // const transporter = nodemailer.createTransport({
+    //   service: 'gmail',
+    //   auth: {
+    //     user: '',
+    //     pass: ''
+    //   }
+    // });
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    updatedAdmin.otp = otp
+    await updatedAdmin.save()
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.ethereal.email',
+      port: 587,
+      auth: {
+          user: 'sandy.anderson@ethereal.email',
+          pass: 'K26Eg8zmEvkHuAYBYm'
+      }
+  });
+
+    const mailOptions = {
+      from: 'node3@flyweis.technology',
+      to: email,
+      subject: 'hello',
+      text: `Your new password is ${hashedPassword}. Please login and change your password as soon as possible.`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
     });
+
+    res.json({msg:updatedAdmin,otp:otp});
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
-};
+}
+
+
 
 // exports.updatePassword = catchAsync(async (req, res, next) => {
 //   // 1) Get user from collection

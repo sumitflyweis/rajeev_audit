@@ -10,7 +10,7 @@ Router.route("/getByUserId/:id").get(userController.getUserById)
 Router.route("/update/:id").put(userController.updateUser)
 
 // Router.route("/logout").post(authController.logout);
-Router.route("/forgetPassword").put(userController.forgetPassword);
+Router.route("/forgetPassword").post(userController.forgetPassword);
 // Router.route("/socialLogin").post(authController.socialLogin);
 
 //=================
