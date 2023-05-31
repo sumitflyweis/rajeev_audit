@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
+const nodemailer = require("nodemailer")
 const User = require("../../model/userCreate");
 const bcrypt = require("bcryptjs");
 const JWT_EXPIRES_IN = "1d"
@@ -322,19 +323,6 @@ exports.forgetPassword = async (req, res, next) => {
     // Generate a random password
     //const newPassword = password//Math.random().toString(36).slice(-8);
 
-    // Hash the new password
-    const salt = await bcrypt.genSalt(10);
-    
-    const hashedPassword = await bcrypt.hash(admin.password, salt);
-    console.log("hi")
-    const hashedPassword2 = await bcrypt.hash(admin.confirmpassword, salt);
-   
-   
-    // Save the updated admin object to the database
-    
-    admin.password =  hashedPassword
-    admin.confirmpassword = hashedPassword2
-    const updatedAdmin = await admin.save();
 
     // Send password reset email
     // const transporter = nodemailer.createTransport({
@@ -346,8 +334,8 @@ exports.forgetPassword = async (req, res, next) => {
     // });
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    updatedAdmin.otp = otp
-    await updatedAdmin.save()
+    admin.otp = otp
+    await admin.save()
     const transporter = nodemailer.createTransport({
       host: 'smtp.ethereal.email',
       port: 587,
@@ -361,7 +349,7 @@ exports.forgetPassword = async (req, res, next) => {
       from: 'node3@flyweis.technology',
       to: email,
       subject: 'hello',
-      text: `Your new password is ${hashedPassword}. Please login and change your password as soon as possible.`
+      text: `Your new password is ${otp}. Please login and change your password as soon as possible.`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -372,7 +360,7 @@ exports.forgetPassword = async (req, res, next) => {
       }
     });
 
-    res.json({msg:updatedAdmin,otp:otp});
+    res.json({msg:admin});
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
