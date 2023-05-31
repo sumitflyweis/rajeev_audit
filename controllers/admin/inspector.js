@@ -12,7 +12,7 @@ exports.createInspector = async (req, res) => {
 
 exports.getInspectorById = async (req, res) => {
   try {
-    const inspector = await Inspector.findOne({ inspectorId: req.params.id });
+    const inspector = await Inspector.findOne({ _id: req.params.id });
     if (!inspector) {
       return res.status(404).json({ message: "Inspector not found" });
     }
