@@ -50,6 +50,18 @@ const checkSheetSchema = mongoose.Schema({
     type: String,
     default: ""
   },
+  address:{
+    type:String,
+    default:""
+  },
+  auditDate:{
+    type:String,
+    default:""
+  },
+  location:{
+    type:String,
+    default:""
+  }
 });
 
 const checkSheetModel = mongoose.model("checkSheet", checkSheetSchema);

@@ -145,6 +145,13 @@ exports.updatefields = async (req, res) => {
           QA_CA_ID: req.body.QA_CA_ID,
           client: req.body.client,
           circle: req.body.circle,
+          auditDate:req.body.auditDate,
+          address:req.body.address,
+          location:req.body.location,
+          siteName : req.body.siteName,
+          siteId : req.body.siteId,
+          uploadDocument:req.body.uploadDocument,
+          
         },
       },
       { new: true }
