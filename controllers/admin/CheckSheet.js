@@ -15,7 +15,7 @@ exports.createCheckSheet = async (req, res) => {
 exports.getAllCheckSheets = async (req, res) => {
   try {
     const checkSheets = await CheckSheet.find();
-    res.json(checkSheets);
+    res.json({msg:checkSheets});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -28,7 +28,7 @@ exports.getCheckSheetById = async (req, res) => {
     if (!checkSheet) {
       return res.status(404).json({ message: "Check sheet not found" });
     }
-    res.json(checkSheet);
+    res.json({msg:checkSheet});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -123,7 +123,7 @@ exports.getCheckSheetBySiteId = async (req, res) => {
     if (!checkSheet) {
       return res.status(404).json({ message: "Check sheet not found" });
     }
-    res.json(checkSheet);
+    res.json({msg:checkSheet});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -175,7 +175,7 @@ exports.populatesiteid = async (req, res) => {
     if (checkSheets.length === 0) {
       return res.json([]);
     }
-    return res.json(checkSheets);
+    return res.json({msg:checkSheets});
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
