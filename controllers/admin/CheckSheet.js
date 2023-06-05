@@ -3,7 +3,7 @@ const CheckSheet = require("../../model/CheckSheet");
 // CREATE a new check sheet
 exports.createCheckSheet = async (req, res) => {
   try {
-    const checkSheet = new CheckSheet(req.body);
+    const checkSheet = await CheckSheet(req.body);
     await checkSheet.save();
     res.status(201).json(checkSheet);
   } catch (error) {

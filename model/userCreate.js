@@ -5,7 +5,7 @@ const validator = require("validator");
 const userSchema = new mongoose.Schema({
   fullName: {
     type: String,
-    required: [true, "Please Enter your First name"],
+    //required: [true, "Please Enter your First name"],
     default:""
   },
   // middleName: {

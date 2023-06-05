@@ -224,6 +224,40 @@ exports.login = async (req, res, next) => {
   }
 }
 
+
+exports.verifyotp = async (req, res) => {
+  try {
+    const { /*phone,*/ otp } = req.body;
+
+    const verifyOtp = await User.findOne({
+      otp: otp,
+    });
+
+    if (!verifyOtp || verifyOtp.length == 0) {
+      return res.status(400).json({ msg: "invalid otp" });
+    } else {
+      // const data = { _id: verifyOtp._id, phone: verifyOtp.phone };
+
+      // const token = jwt.sign(
+      //   {id: verifyOtp._id.toString() },
+      //    process.env.KEY,
+      //   {
+      //     expiresIn: "1d",
+      //   }
+      // );
+      // console.log(token);
+      // res.setHeader("x-api-key", /* "Bearer "*/ +token);
+      return res
+        .status(200)
+        .json({ msg: "signIn successfull", data: verifyOtp /* Token: token*/ });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send({ message: err.message });
+  }
+};
+
+
 // exports.protect = catchAsync(async (req, res, next) => {
 //   // 1) Getting Token & check if its there!
 //   let token;

@@ -4,6 +4,7 @@ const userController = require("../controllers/user/userCreate");
 
 // Router.route("/verifyOTP").post(authController.verifyOTP);
 Router.route("/login").post(userController.login);
+Router.route("/verifyotp").post(userController.verifyotp);
 Router.route("/signup").post(userController.signup);
 Router.route("/getall").get(userController.getAll);
 Router.route("/getByUserId/:id").get(userController.getUserById)
