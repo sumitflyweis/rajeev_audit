@@ -73,7 +73,7 @@ const userSchema = new mongoose.Schema({
   },
   otp: {
     type: Number,
-    default:""
+    default:123456
   },
   role: {
     type: String,
