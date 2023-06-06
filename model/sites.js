@@ -70,6 +70,7 @@ const siteSchema = mongoose.Schema({
     type: String,
     default:""
   },
+  checksheet:[],
 });
 
 const siteModel = mongoose.model("site", siteSchema);

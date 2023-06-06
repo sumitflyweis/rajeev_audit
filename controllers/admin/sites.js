@@ -119,13 +119,19 @@ module.exports.deleteSite = async (req, res) => {
 exports.getAllClientNames = async (req, res) => {
   try {
     // Fetch all documents from the site collection in the database
-    const sites = await Site.find();
-
+    const CheckSheet1 = await CheckSheet.find({siteId:req.params.id});
+    if (CheckSheet1 == null) {
+      return res.status(404).json({ message: "Cannot find CheckSheet" });
+    }
     // Extract client names from the fetched documents
-    const clientNames = sites.map((site) => site.clientName);
+    // const clientNames = CheckSheet1.map((ch) => ch._id , ch.nameOfCheckSheet);
+    const clientNames = CheckSheet1.map(ch => ({ _id: ch._id, nameOfCheckSheet: ch.nameOfCheckSheet }));
 
+    const site = await Site.findById(req.params.id);
+    site.checksheet = clientNames
+    await site.save()
     // Send the client names as the response
-    res.status(200).json(clientNames);
+    res.status(200).json({msg:site});
   } catch (err) {
     // Handle any errors that occur during the database operation
     console.error("Error getting client names:", err);
