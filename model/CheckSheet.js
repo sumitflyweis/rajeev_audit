@@ -12,6 +12,10 @@ const checkSheetSchema = mongoose.Schema({
   },
   addQuestionForInspect: [
     {
+      isAnswer:{
+        type:Boolean,
+        default:false
+      },
       question: {
         type: String,
         default: ""
