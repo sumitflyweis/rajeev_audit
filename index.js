@@ -53,6 +53,7 @@ app.use("/api/v1/reports",require('./route/reports'))
 app.use("/api/v1/client",require('./route/client'))
 app.use("/api/v1/total",require('./route/total'))
 app.use("/api/v1/bannerr",require("./route/banner"))
+app.use("/api/v1/imagee",require("./route/image"))
 
 
 // app.all("*", (req, res, next) => {

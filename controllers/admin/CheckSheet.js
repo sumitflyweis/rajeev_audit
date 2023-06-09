@@ -206,6 +206,19 @@ exports.getCheckSheetBySiteId = async (req, res) => {
   }
 };
 
+
+exports.getCheckSheetBySiteIdandchecksheetid = async (req, res) => {
+  try {
+    const checkSheet = await CheckSheet.find({ siteId: req.params.siteid , _id:req.params.checsheet });
+    if (!checkSheet) {
+      return res.status(404).json({ message: "Check sheet not found" });
+    }
+    res.json({msg:checkSheet});
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // UPDATE a check sheet by ID
 exports.updatefields = async (req, res) => {
   try {
