@@ -73,3 +73,56 @@ const postSchema = mongoose.Schema(
 );
 
 module.exports = mongoose.model("post", postSchema);
+
+
+
+   
+//     like: {
+//         count: {
+//           type: Number,
+//           default: 0,
+//         },
+//         status:{
+//           type:Boolean,
+//           default:false
+//         },
+//         user: [
+//           {
+//             type: objectId,
+//             ref: "userProfile",
+//           },
+//         ],
+//        },
+//        comment: {
+//         count: {
+//           type: Number,
+//           default: 0,
+//         },
+//         user: {
+//           type: objectId,
+//           ref: "userProfile",
+//         },
+//       },
+//         comments: [
+//           // {
+//           //   user: {
+//           //     type: objectId,
+//           //     ref: "userProfile",
+//           //   },
+//           //   comment: {
+//           //     type: String,
+//           //     default: ""
+//           //   }
+//           // }
+//         ]
+      
+//       },{
+//       timestamps:true
+//     })
+
+
+// const communitymodel = mongoose.model('community', communitySchema);
+
+// module.exports = communitymodel;
+
+

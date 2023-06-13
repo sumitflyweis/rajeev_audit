@@ -104,3 +104,77 @@ exports.commentOnPost = async (req, res) => {
     res.status(500).json({ error: "Failed to like post" });
   }
 };
+
+
+
+
+
+// exports.likePost = async (req, res) => {
+//   try {
+//     const postId = req.params.postId;
+//     const user = req.params.user
+   
+//     const userId = await userSchema.findById({_id:user})
+//     if (!userId) {
+//       return res.status(404).json({ error: "user not found" })
+//     }
+//     //const userId = req.user.id; // Assuming the user ID is available in req.user.id
+//     const post = await communityModel.findById(postId)
+//     if (!post) {
+//       return res.status(404).json({ error: "Post not found" })
+//     }
+//     if (post.like.user.includes(user)) {
+//       return res.status(400).json({ message: "You have already liked this post" });
+//     }
+
+//     post.like.count += 1;
+//     post.like.user.push(userId)
+//     post.like.status = true
+//     await post.save();
+
+//     res.json({msg:post});
+//   } catch (error) {
+//     res.status(500).json({ error: "Failed to like post" });
+//   }
+// };
+
+
+
+// exports.commentOnPost = async (req, res) => {
+//   try {
+//     const postId = req.params.postId;
+//     const userId = req.params.user;
+
+//     const user = await userSchema.findById(userId);
+//     if (!user) {
+//       return res.status(404).json({ error: "User not found" });
+//     }
+
+//     const { comment } = req.body;
+
+//     const post = await communityModel.findById(postId);
+//     if (!post) {
+//       return res.status(404).json({ error: "Post not found" });
+//     }
+
+//     post.comment.count += 1;
+
+//     const newComment = {
+//       userId:user._id,
+//       user: user.name,
+//       profile:user.profileImage,
+//       comment: comment
+//     };
+//     // post.comment.user.push(userId);
+    
+//     post.comments.push(newComment);
+//     await post.save();
+
+//     res.json({ msg: post });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: "Failed to comment on post" });
+//   }
+// };
+
+  
