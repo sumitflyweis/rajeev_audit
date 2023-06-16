@@ -5,7 +5,7 @@ const UserController = require("../controller/aadhar");
 // create a user
 router.post("/", UserController.addharotp);
 
-// router.post("/verifyadminotp", UserController.verifyadminotp)
+router.post("/verifyadminotp", UserController.verifyadminotp)
 
 
 module.exports = router;

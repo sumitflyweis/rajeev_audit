@@ -54,7 +54,7 @@ app.use('/api/v1/vedioo',require ('./src/route/vedio'))
 app.use('/api/v1/wishlistt',require('./src/route/wishlist'))
 app.use('/api/v1/petrolrate',require('./src/route/rateOfpetrolRate'))
 app.use('/api/v1/authadminn',require('./src/route/authadmin'))
-app.use("./api/v1/adharveri",require('./src/route/addharverification'))
+app.use("/api/v1/adharveri",require('./src/route/addharverification'))
 app.use("/api/v1/noti",require("./src/route/notifcation"))
 // app.use('/api/v1/paymentt',paymentt)
 

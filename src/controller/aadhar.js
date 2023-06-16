@@ -87,3 +87,48 @@ exports.addharotp = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+
+
+exports.verifyadminotp = async (req, res) => {
+  try {
+    const {
+      otp,
+      ref_id
+    } = req.body;
+
+    const newBeneficiary = new addharcard({
+      otp,
+      ref_id
+    });
+
+    
+    const clientId = "CF458155CI63HMEOJF7QM277LKR0";
+    const clientSecret = "5a7d205372069c3fda85e52f8c3072b0ea4cc683";
+
+    const headers = {
+      "x-api-version": "2023-03-01",
+      "Content-Type": "application/json",
+      "X-Client-ID": clientId,
+      "X-Client-Secret": clientSecret,
+    };
+
+    console.log(headers);
+    const response = await axios.post(
+      "https://api.cashfree.com/verification/offline-aadhaar/verify",
+      newBeneficiary,
+      {
+        headers: headers,
+      }
+    );
+
+   // console.log(response);
+    const createdBeneficiary = response.data;
+    console.log(createdBeneficiary)
+    newBeneficiary.save()
+    res.status(201).json(createdBeneficiary);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
