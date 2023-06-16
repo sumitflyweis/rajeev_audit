@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const UserController = require("../controller/");
+const UserController = require("../controller/aadhar");
 
 // create a user
-// router.post("/", UserController.createUser);
+router.post("/", UserController.addharotp);
 
 // router.post("/verifyadminotp", UserController.verifyadminotp)
 

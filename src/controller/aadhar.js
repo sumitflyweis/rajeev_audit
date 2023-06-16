@@ -1,6 +1,7 @@
 const axios = require("axios");
 const AadharMatch = require("../model/aadhar");
-const aadhar = require("../model/")
+const addharcard = require("../model/addharverification");
+
 
 // Function to match the front and back side of Aadhar card
 //exports.matchAadhar = async (req, res) => {
@@ -52,7 +53,7 @@ exports.addharotp = async (req, res) => {
         aadhaar_number
     } = req.body;
 
-    const newBeneficiary = new AadharMatch({
+    const newBeneficiary = new addharcard({
         aadhaar_number
     });
 
