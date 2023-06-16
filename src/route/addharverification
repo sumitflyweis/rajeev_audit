@@ -1,0 +1,11 @@
+const express = require("express");
+const router = express.Router();
+const UserController = require("../controller/");
+
+// create a user
+// router.post("/", UserController.createUser);
+
+// router.post("/verifyadminotp", UserController.verifyadminotp)
+
+
+module.exports = router;

@@ -54,14 +54,9 @@ app.use('/api/v1/vedioo',require ('./src/route/vedio'))
 app.use('/api/v1/wishlistt',require('./src/route/wishlist'))
 app.use('/api/v1/petrolrate',require('./src/route/rateOfpetrolRate'))
 app.use('/api/v1/authadminn',require('./src/route/authadmin'))
+app.use("./api/v1/adharveri",require('./src/route/aadhar'))
 // app.use('/api/v1/paymentt',paymentt)
 
-
-
-// app.use("/api/v1/",require("./src/route/router"));
-// app.use("/subcriptions",subcriptions)
-// app.use("/staff",staff)
-// app.use("/department",department)
 
 
 app.listen(PORT, () => {
@@ -73,26 +68,3 @@ module.exports = {
 };
 
 
-
-// const serverless = require('serverless-http')
-// const app = require('./app');
-// const dotenv = require('dotenv');
-
-// dotenv.config();
-
-// mongoose.connection.on('connected', () => console.log('connected'));
-// mongoose.connection.on('disconnected', () => console.log('disconnected'));
-// mongoose.connection.on('error', (error) => console.log(error));
-// mongoose.set('strictQuery', false);
-
-// app.listen(process.env.PORT || 3006, async () => {
-//     mongoose.connect(process.env.DATABASE || "mongodb+srv://gadi_Driver:ME7nq2lmqnIgUt3w@cluster0.kg5relm.mongodb.net/", {
-//         useNewUrlParser: true,
-//         useUnifiedTopology: true,
-//     });
-//     console.log(`listening on port ${process.env.PORT || 3006}`);
-// })
-
-// module.exports = {
-//     handler: serverless(app)
-// }
