@@ -53,6 +53,7 @@ app.use('/api/v1/packageCompare',require('./src/route/gallery_packageUtilisation
 app.use('/api/v1/vedioo',require ('./src/route/vedio'))
 app.use('/api/v1/wishlistt',require('./src/route/wishlist'))
 app.use('/api/v1/petrolrate',require('./src/route/rateOfpetrolRate'))
+app.use('/api/v1/authadminn',require('./src/route/authadmin'))
 // app.use('/api/v1/paymentt',paymentt)
 
 
