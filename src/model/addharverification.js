@@ -4,8 +4,13 @@ const aadharNumSchema = mongoose.Schema(
   {
     aadhaar_number: {
       type: String,
-     },
-   
+    },
+    otp: {
+      type: String,
+    },
+    ref_id: {
+      type: String,
+    },
   },
   {
     timestamps: true,
