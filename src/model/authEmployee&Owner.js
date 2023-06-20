@@ -7,7 +7,12 @@ const Employee_OwnerSchema = mongoose.Schema(
     },
     otp:{
         type:String
-    }
+    },
+    role:{
+      type:String,
+      default:""
+    },
+    
   },
   {
     timestamps: true,

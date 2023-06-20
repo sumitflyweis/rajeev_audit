@@ -19,17 +19,18 @@ const twilio = require("twilio");
 
 exports.login = async (req, res) => {
   try {
-    const { phone } = req.body;
+    const { phone, role } = req.body;
 
     // Generate a random 6-digit OTP
     const data = await userSchema.findOne({
       phone: phone,
+      role: role,
     });
 
     if (!data || data.length == 0) {
       return res.status(400).json({ msg: "invalid phone" });
     }
-   console.log(data.otp);
+    console.log(data.otp);
 
     const token = jwt.sign({ id: data._id.toString() }, process.env.KEY, {
       expiresIn: "1d",
@@ -51,16 +52,12 @@ exports.login = async (req, res) => {
     //   to: phone,
     // });
 
-    res
-      .status(200)
-      .send({ message: "success", newUser: data, token: token });
+    res.status(200).send({ message: "success", newUser: data, token: token });
   } catch (err) {
     console.log(err);
     return res.status(400).send({ message: err.message });
   }
 };
-
-
 
 exports.verify = async (req, res) => {
   try {
@@ -96,44 +93,54 @@ exports.verify = async (req, res) => {
 
 exports.userProfile1 = async (req, res) => {
   try {
-    const { phone } = req.body;
+    const { phone, role } = req.body;
 
-     const data = await userSchema.findOne({
+    const data = await userSchema.findOne({
       phone: phone,
-      });
-      if(! data || data.length == 0){
-
-    // // Generate a random 6-digit OTP
-    const otp = Math.floor(1000 + Math.random() * 9000);
-    console.log(otp);
-
-    // // Store the OTP for the phone number
-
-    // //otps[phone] = otp;
-    const newUser = await userSchema.create({ phone: phone, otp: otp });
-
-    // Send the OTP to the user's phone number
-    // client.messages.create({
-    //   body: `Your OTP is ${otp}`,
-    //   from: "+16205071468",
-    //   to: phone,
-    // });
-
-    res
-      .status(200)
-      .send({ message: "data created successfully", newUser: newUser });
-      }
-      else{
-      res.status(201).send({
-      message: "User profile already in db",
-      newUser: data,
     });
-      }
+    if (!data || data.length == 0) {
+      // // Generate a random 6-digit OTP
+      const otp = Math.floor(1000 + Math.random() * 9000);
+      console.log(otp);
 
-    
+      // // Store the OTP for the phone number
+
+      // //otps[phone] = otp;
+      const newUser = await userSchema.create({
+        phone: phone,
+        role: role,
+        otp: otp,
+      });
+
+      // Send the OTP to the user's phone number
+      // client.messages.create({
+      //   body: `Your OTP is ${otp}`,
+      //   from: "+16205071468",
+      //   to: phone,
+      // });
+
+      res
+        .status(200)
+        .send({ message: "data created successfully", newUser: newUser });
+    } else {
+      res.status(201).send({
+        message: "User profile already in db",
+      });
+    }
   } catch (err) {
     console.log(err);
     res.status(500).send({ message: "Internal Server Error" });
+  }
+};
+
+
+exports.getAllauth = async (req, res) => {
+  try {
+    const cameraBrowseEntries = await userSchema.find();
+
+    res.status(200).json({msg:cameraBrowseEntries});
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while retrieving cameraBrowse entries.' });
   }
 };
 
@@ -185,8 +192,6 @@ exports.userProfile1 = async (req, res) => {
 //   }
 // };
 
-
-
 // exports.socialLogin = async (req, res) => {
 //   try {
 //     const { google_id } = req.body
@@ -216,7 +221,6 @@ exports.userProfile1 = async (req, res) => {
 //       });
 //     }
 
-
 //     console.log("hi")
 //     const accessToken = jwt.sign({id: user._id }, process.env.KEY, {
 //       expiresIn: "1d",
@@ -235,5 +239,3 @@ exports.userProfile1 = async (req, res) => {
 //       .send({ error: "internal server error" + err.message });
 //   }
 // }
-
-
