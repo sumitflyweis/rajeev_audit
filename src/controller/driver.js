@@ -2,34 +2,50 @@ const Driver = require("../model/driver");
 const axios = require("axios");
 const twilio = require("twilio");
 
-// Create a new driver
+
 exports.createDriver = async (req, res) => {
   try {
-    //   authid : req.body.authid,
-    //   licienceNumber,
-    //   gender,
-    //   firstName,
-    //   lastName,
-    //   ResumeTitle,
-    //   location,
-    //   exactAddress,
-    //   category,
-    //   language,
-    //   militaryService,
-    //   DateOfBirth,
-    // });
-    const driver = await Driver.create(req.body);
-    console.log(driver);
-    res
-      .status(201)
-      .send({ message: "data created successfully", data: driver });
+    console.log("hi")
+    const {
+      authid,
+      gender,
+      firstName,
+      lastName,
+      ResumeTitle,
+      location,
+      exactAddress,
+      category,
+      language,
+      militaryService,
+      DateOfBirth,
+      licienceNumber,
+    } = req.body;
+
+    const driver = new Driver({
+      authid,
+      gender,
+      firstName,
+      lastName,
+      ResumeTitle,
+      location,
+      exactAddress,
+      category,
+      language,
+      militaryService,
+      DateOfBirth,
+      licienceNumber,
+    });
+
+    const savedDriver = await driver.save();
+
+    res.status(201).json({ driver: savedDriver });
   } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while creating the driver." });
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while creating the driver." });
   }
 };
+
+
 
 exports.getallDriver = async (req, res) => {
   try {
@@ -63,22 +79,20 @@ exports.getDriverById = async (req, res) => {
   }
 };
 
-
-
 exports.getAllwhoviewed = async (req, res) => {
   try {
     const obj = {
-      ...req.query
+      ...req.query,
+    };
+    if (req.query.viewed) {
+      obj.viewed = obj.viewed == "true" ? true : false;
     }
-    if(req.query.viewed){
-   obj.viewed = obj.viewed == "true"?true:false
-    }
-   console.log(obj)
-    const order = await Driver.find(obj)
+    console.log(obj);
+    const order = await Driver.find(obj);
     //const orders = await Order.find();
     res.status(200).json({
       success: true,
-      total:order.length,
+      total: order.length,
       data: order,
     });
   } catch (err) {
@@ -107,7 +121,7 @@ exports.updateDriver = async (req, res) => {
       language,
       militaryService,
       DateOfBirth,
-      viewed
+      viewed,
     } = req.body;
 
     const driver = await Driver.findOneAndUpdate(
@@ -125,7 +139,7 @@ exports.updateDriver = async (req, res) => {
         language,
         militaryService,
         DateOfBirth,
-        viewed
+        viewed,
       },
       { new: true }
     );
@@ -236,48 +250,44 @@ exports.updateAdhaar = async (req, res) => {
   }
 };
 
-
-
 // Update an existing driver
 exports.employerAction = async (req, res) => {
   try {
     const { jobServicesId } = req.params;
     const { employerAction } = req.body;
-      const driver = await Driver.findOneAndUpdate(
-        { jobServicesId },
-        { employerAction },
-        { new: true }
-      );
-  
-      if (!driver) {
-        return res.status(404).json({ error: "Driver not found" });
-      }
-  
-      return res.json(driver);
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ error: "Internal Server Error" });
-    }
-  }
+    const driver = await Driver.findOneAndUpdate(
+      { jobServicesId },
+      { employerAction },
+      { new: true }
+    );
 
-
-  exports.findEmployerAction = async (req, res) => {
-    const { employerAction } = req.query;
-  
-    try {
-      const driver = await Driver.find({employerAction: employerAction });
-  
-      if (!driver) {
-        return res.status(404).json({ error: "Driver not found" });
-      }
-  
-      return res.json({msg: driver });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ error: "Internal Server Error" });
+    if (!driver) {
+      return res.status(404).json({ error: "Driver not found" });
     }
+
+    return res.json(driver);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
-  
+};
+
+exports.findEmployerAction = async (req, res) => {
+  const { employerAction } = req.query;
+
+  try {
+    const driver = await Driver.find({ employerAction: employerAction });
+
+    if (!driver) {
+      return res.status(404).json({ error: "Driver not found" });
+    }
+
+    return res.json({ msg: driver });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 // Assuming you have a User model defined
 
@@ -370,16 +380,12 @@ async function sendOTP(mobileNumber, otp) {
   }
 }
 
-
-
-
-
 exports.updateByJobService = async (req, res) => {
   try {
-      const driver = await Driver.findOneAndUpdate(
+    const driver = await Driver.findOneAndUpdate(
       { _id: req.params.id },
       {
-        jobServicesId : req.body.jobServicesId
+        jobServicesId: req.body.jobServicesId,
       },
       { new: true }
     );
@@ -388,14 +394,13 @@ exports.updateByJobService = async (req, res) => {
       return res.status(404).json({ error: "Driver not found." });
     }
 
-    res.status(200).json({msg:driver});
+    res.status(200).json({ msg: driver });
   } catch (error) {
     res
       .status(500)
       .json({ error: "An error occurred while updating the driver." });
   }
 };
-
 
 // Delete a driver
 exports.deleteDriverById = async (req, res) => {

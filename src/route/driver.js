@@ -5,7 +5,8 @@ const driverController = require('../controller/driver');
 
 
 
-router.post('/', driverController.createDriver);
+router.post('/post', driverController.createDriver);
+
 
 
 router.get('/', driverController.getallDriver)
