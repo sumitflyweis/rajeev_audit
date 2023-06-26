@@ -19,12 +19,11 @@ const twilio = require("twilio");
 
 exports.login = async (req, res) => {
   try {
-    const { phone, role } = req.body;
+    const { phone } = req.body;
 
     // Generate a random 6-digit OTP
     const data = await userSchema.findOne({
       phone: phone,
-      role: role,
     });
 
     if (!data || data.length == 0) {
@@ -93,7 +92,7 @@ exports.verify = async (req, res) => {
 
 exports.userProfile1 = async (req, res) => {
   try {
-    const { phone, role } = req.body;
+    const { phone } = req.body;
 
     const data = await userSchema.findOne({
       phone: phone,
@@ -108,7 +107,6 @@ exports.userProfile1 = async (req, res) => {
       // //otps[phone] = otp;
       const newUser = await userSchema.create({
         phone: phone,
-        role: role,
         otp: otp,
       });
 
@@ -133,53 +131,43 @@ exports.userProfile1 = async (req, res) => {
   }
 };
 
-
 exports.getAllauth = async (req, res) => {
   try {
     const cameraBrowseEntries = await userSchema.find();
 
-    res.status(200).json({msg:cameraBrowseEntries});
+    res.status(200).json({ msg: cameraBrowseEntries });
   } catch (error) {
-    res.status(500).json({ error: 'An error occurred while retrieving cameraBrowse entries.' });
+    res
+      .status(500)
+      .json({
+        error: "An error occurred while retrieving cameraBrowse entries.",
+      });
   }
 };
 
-// exports.userUpdate = async (req, res) => {
-//   try {
-//     console.log("hi");
-//     const data = {
-//       name: req.body.name,
-//       email: req.body.email,
-//       phone: req.body.phone,
-//       profileImage: req.body.profileImage,
-//       age: req.body.age,
-//       address: req.body.address,
-//       language: req.body.language,
-//       location: req.body.location,
-//       password: bcrypt.hashSync(req.body.password, 8),
-//       confirmPassword: bcrypt.hashSync(req.body.confirmPassword, 8),
-//       otp: req.body.otp,
-//       google_id: req.body.google_id,
-//       Token: req.body.Token,
-//     }
-//      let userId = req.user._id
-//     console.log(userId);
-//     const user = await userSchema.findByIdAndUpdate(
-//       { _id: req.user._id},
-//       data,
-//       {
-//         new: true,
-//       }
-//     );
-//     console.log(user);
-//     return res.status(200).json({ msg: "profile details updated", user: user });
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(400).json({
-//       message: err.message,
-//     });
-//   }
-// };
+exports.userUpdate = async (req, res) => {
+  try {
+    console.log("hi");
+    const data = {
+      role: req.body.role,
+    };
+    
+    const user = await userSchema.findByIdAndUpdate(
+      { _id: req.params.id },
+      data,
+      {
+        new: true,
+      }
+    );
+    console.log(user);
+    return res.status(200).json({ msg: "profile details updated", user: user });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({
+      message: err.message,
+    });
+  }
+};
 
 // exports.deleteUserById = async (req, res) => {
 //   try {
