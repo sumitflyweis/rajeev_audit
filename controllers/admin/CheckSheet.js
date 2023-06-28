@@ -1,12 +1,108 @@
 const CheckSheet = require("../../model/CheckSheet");
+const Inspector = require("../../model/inspector");
+
+
+const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
+
+// configure Cloudinary credentials
+cloudinary.config({
+  cloud_name: "dbrvq9uxa",
+  api_key: "567113285751718",
+  api_secret: "rjTsz9ksqzlDtsrlOPcTs_-QtW4",
+});
+
+// configure multer to use Cloudinary as storage destination
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "images/image", // optional folder name in your Cloudinary account
+    allowed_formats: ["jpg", "jpeg", "png", "PNG", "xlsx", "xls"], // allowed file formats
+  },
+});
+
+// create multer instance with storage configuration
+const upload = multer({ storage: storage });
+console.log(upload)
+
+// exports.updateUser = async (req, res) => {
+//   try {
+//     upload.single("file")(req, res, async (err) => {
+//       if (err) {
+//         return res.status(400).json({ msg: err.message });
+//       }
+
+//       // Get the URL of the uploaded file
+//       const fileUrl = req.file ? req.file.path : "";
+
+//       const {
+//         name,
+//         phoneNumber,
+//         role,
+//         gender,
+//         email,
+//         birth,
+//         city,
+//         website,
+//         ishero,
+//         status,
+//         wallet,
+//         rating,
+//         profile,
+//       } = req.body;
+
+//       const user = await userSchema.findOneAndUpdate(
+//         { _id: req.params.id },
+//         {
+//           $set: {
+//             name,
+//             phoneNumber,
+//             role,
+//             gender,
+//             email,
+//             birth,
+//             city,
+//             website,
+//             ishero,
+//             status,
+//             wallet,
+//             rating,
+//             profile: fileUrl || profile,
+//           },
+//         },
+//         { new: true }
+//       );
+
+//       if (user) {
+//         return res
+//           .status(200)
+//           .json({ msg: "Profile details updated", data: user });
+//       } else {
+//         return res.status(400).json({ msg: "Something went wrong" });
+//       }
+//     });
+//   } catch (error) {
+//     console.log(error)
+//     return res.status(500).json({ msg: error.message, name: error.name });
+//   }
+// };
 
 // CREATE a new check sheet
 exports.createCheckSheet = async (req, res) => {
   try {
+    const data = await Inspector.findById({ _id: req.body.inspectorid });
+    if (!data) {
+      return res.status(404).json({ message: "Inspector not found" });
+    }
+    let loca = data.location;
     const checkSheet = await CheckSheet(req.body);
+    checkSheet.location = loca;
     await checkSheet.save();
+    console.log(checkSheet);
     res.status(201).json(checkSheet);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -14,8 +110,8 @@ exports.createCheckSheet = async (req, res) => {
 // READ all check sheets
 exports.getAllCheckSheets = async (req, res) => {
   try {
-    const checkSheets = await CheckSheet.find();
-    res.json({msg:checkSheets});
+    const checkSheets = await CheckSheet.find().populate("inspectorid");
+    res.json({ msg: checkSheets });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -24,92 +120,133 @@ exports.getAllCheckSheets = async (req, res) => {
 // READ a single check sheet by ID
 exports.getCheckSheetById = async (req, res) => {
   try {
-    const checkSheet = await CheckSheet.findById(req.params.id);
+    const checkSheet = await CheckSheet.findById(req.params.id).populate(
+      "inspectorid"
+    );
     if (!checkSheet) {
       return res.status(404).json({ message: "Check sheet not found" });
     }
-    res.json({msg:checkSheet});
+    res.json({ msg: checkSheet });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
 
-// UPDATE a check sheet by ID
+
 exports.addQuestionInID = async (req, res) => {
   try {
+    upload.single("file")(req, res, async (err) => {
+            if (err) {
+              return res.status(400).json({ msg: err.message });
+            }
+      
+            // Get the URL of the uploaded file
+            const fileUrl = req.file ? req.file.path : "";
+
     const checkSheet = await CheckSheet.findByIdAndUpdate(
       {
         _id: req.params.id,
       },
-      { $push: { addQuestionForInspect: { question: req.body.question,type: req.body.type }}},
+      {
+        $push: {
+          addQuestionForInspect: {
+            question: req.body.question,
+            type: req.body.type,
+            answerDropdown: req.body.answerDropdown,
+            photo : fileUrl || req.body.photo,
+            remarks:req.body.remarks
+          },
+        },
+      },
       { new: true }
-    );
+    )
 
     if (!checkSheet) {
       return res.status(404).json({ message: "Check sheet not found" });
     }
     res.json(checkSheet);
-  } catch (error) {
+  } )
+}catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
 
 
-
 exports.updateCheckSheet = async (req, res) => {
   try {
-    const { checkSheetId, questionId } = req.params;
-    const { answer,isAnswer } = req.body;
+    upload.single("file")(req, res, async (err) => {
+      if (err) {
+        return res.status(400).json({ msg: err.message });
+      }
 
-    const updatedCheckSheet = await CheckSheet.updateOne(
-      { _id: checkSheetId, "addQuestionForInspect._id": questionId },
-      { $set: { "addQuestionForInspect.$.answer": answer,
-      "addQuestionForInspect.$.isAnswer": isAnswer  } }
-    );
+      // Get the URL of the uploaded file
+      const fileUrl = req.file ? req.file.path : "";
 
-    if (updatedCheckSheet.nModified === 0) {
-      return res
-        .status(404)
-        .json({ error: "Question or checkSheet not found" });
-    }
+      const { checkSheetId, questionId } = req.params;
+      const { answer, isAnswer, photo, remarks } = req.body;
 
-    res.json({ message: "Answer updated successfully", updatedCheckSheet });
+      const updatedCheckSheet = await CheckSheet.updateOne(
+        {
+          _id: checkSheetId,
+          "addQuestionForInspect._id": questionId
+        },
+        {
+          $set: {
+            "addQuestionForInspect.$.answer": answer,
+            "addQuestionForInspect.$.isAnswer": isAnswer,
+            "addQuestionForInspect.$.photo": fileUrl || photo,
+            "addQuestionForInspect.$.remarks": remarks
+          }
+        }
+      );
+
+      if (updatedCheckSheet.nModified === 0) {
+        return res.status(404).json({ error: "Question or checkSheet not found" });
+      }
+
+      res.json({ message: "Answer updated successfully", updatedCheckSheet });
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
 
-// exports.CheckAnswer = async (req, res) => {
-//   try {
-//     const checkSheet = await CheckSheet.findOne({ _id: req.params.id });
 
-//     console.log(checkSheet);
+// Update the addQuestionForInspect array with answerDropdown data
+// router.put("/questions/:questionId", async (req, res) => {
+//   try {
+//     const { questionId } = req.params;
+//     const { type, answerDropdown } = req.body;
+
+//     // Find the check sheet by questionId
+//     const checkSheet = await CheckSheet.findById(questionId);
 
 //     if (!checkSheet) {
 //       return res.status(404).json({ message: "Check sheet not found" });
 //     }
 
-//     const questionsWithAnswer = checkSheet.addQuestionForInspect.filter(
-//       (q) => q.answer !== "select"
-//     );
-//     const questionsWithoutAnswer = checkSheet.addQuestionForInspect.filter(
-//       (q) => q.answer === "select"
-//     );
+//     // Update the type and answer fields based on the selected type
+//     if (type === "dropdown") {
+//     //   checkSheet.addQuestionForInspect[0].type = type
+//     //   checkSheet.addQuestionForInspect[0].answerDropdown = answerDropdown
+//     //   checkSheet.addQuestionForInspect[0].answer = ""// Clear the answer field when type is dropdown
+//     // } else {
+//       checkSheet.addQuestionForInspect[0].type = type;
+//       checkSheet.addQuestionForInspect[0].answer = answerDropdown[0]; // Set the first option as the answer when type is not dropdown
+//       checkSheet.addQuestionForInspect[0].answerDropdown = []; // Clear the answerDropdown field when type is not dropdown
+//     }
 
-//     return res.status(200).json({
-//       questionsWithAnswer,
-//       questionsWithoutAnswer,
-//     });
+//     // Save the updated check sheet
+//     await checkSheet.save();
+
+//     res.json(checkSheet);
 //   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({ message: "Server error" });
+//     res.status(500).json({ message: err.message });
 //   }
-// };
-
-
+// });
 
 // exports.CheckAnswer = async (req, res) => {
 //   try {
@@ -128,7 +265,6 @@ exports.updateCheckSheet = async (req, res) => {
 //       (q) => q.answer === "select" && q.isAnswer === false
 //     );
 
-
 //   let data = [questionsWithAnswer,questionsWithoutAnswer]
 //     return res.status(200).json(
 //       // questionsWithAnswer,
@@ -140,7 +276,6 @@ exports.updateCheckSheet = async (req, res) => {
 //     return res.status(500).json({ message: "Server error" });
 //   }
 // };
-
 
 exports.CheckAnswer = async (req, res) => {
   try {
@@ -178,8 +313,6 @@ function shuffleArray(array) {
   }
 }
 
-
-
 // DELETE a check sheet by ID
 exports.deleteCheckSheet = async (req, res) => {
   try {
@@ -200,20 +333,22 @@ exports.getCheckSheetBySiteId = async (req, res) => {
     if (!checkSheet) {
       return res.status(404).json({ message: "Check sheet not found" });
     }
-    res.json({msg:checkSheet});
+    res.json({ msg: checkSheet });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
 exports.getCheckSheetBySiteIdandchecksheetid = async (req, res) => {
   try {
-    const checkSheet = await CheckSheet.find({ siteId: req.params.siteid , _id:req.params.checsheet });
+    const checkSheet = await CheckSheet.find({
+      siteId: req.params.siteid,
+      _id: req.params.checsheet,
+    });
     if (!checkSheet) {
       return res.status(404).json({ message: "Check sheet not found" });
     }
-    res.json({msg:checkSheet});
+    res.json({ msg: checkSheet });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -235,13 +370,12 @@ exports.updatefields = async (req, res) => {
           QA_CA_ID: req.body.QA_CA_ID,
           client: req.body.client,
           circle: req.body.circle,
-          auditDate:req.body.auditDate,
-          address:req.body.address,
-          location:req.body.location,
-          siteName : req.body.siteName,
-          siteId : req.body.siteId,
-          uploadDocument:req.body.uploadDocument,
-          
+          auditDate: req.body.auditDate,
+          address: req.body.address,
+          location: req.body.location,
+          siteName: req.body.siteName,
+          siteId: req.body.siteId,
+          uploadDocument: req.body.uploadDocument,
         },
       },
       { new: true }
@@ -265,7 +399,7 @@ exports.populatesiteid = async (req, res) => {
     if (checkSheets.length === 0) {
       return res.json([]);
     }
-    return res.json({msg:checkSheets});
+    return res.json({ msg: checkSheets });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

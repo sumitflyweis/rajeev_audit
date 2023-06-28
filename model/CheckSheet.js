@@ -6,33 +6,43 @@ const checkSheetSchema = mongoose.Schema({
     type: String,
     default: "",
   },
-  revisionNumber: { 
-    type: String ,
-    default: ""
+  revisionNumber: {
+    type: String,
+    default: "",
   },
   addQuestionForInspect: [
     {
-      isAnswer:{
-        type:Boolean,
-        default:false
+      isAnswer: {
+        type: String,
+        default: "false",
       },
       question: {
         type: String,
-        default: ""
+        default: "",
       },
-      type: { 
+      type: {
         type: String,
-        default: ""
-       },
+        default: "",
+      },
       answer: {
         type: String,
         default: "select",
       },
+      photo:{
+        type:String,
+        default:""
+      },
+      remarks:{
+        type:String,
+        default:""
+      },
+      answerDropdown: [],
     },
-    ],
+  ],
+  
   uploadDocument: {
     type: String,
-    default: ""
+    default: "",
   },
   siteId: {
     type: objectid,
@@ -40,32 +50,47 @@ const checkSheetSchema = mongoose.Schema({
   },
   siteName: {
     type: String,
-    default: ""
+    default: "",
   },
   QA_CA_ID: {
     type: String,
-    default: ""
+    default: "",
   },
   client: {
     type: String,
-    default: ""
+    default: "",
   },
   circle: {
     type: String,
-    default: ""
+    default: "",
   },
-  address:{
-    type:String,
-    default:""
+  address: {
+    type: String,
+    default: "",
   },
-  auditDate:{
-    type:String,
-    default:""
+  auditDate: {
+    type: String,
+    default: "",
   },
-  location:{
-    type:String,
-    default:""
-  }
+  // location:{
+  //   type:String,
+  //   default:""
+  // },
+  location: {
+    type: {
+      type: String,
+      // enum: ["Point"],
+      default: "Point",
+    },
+    coordinates: {
+      type: [Number],
+      default: [0, 0],
+    },
+  },
+  inspectorid: {
+    type: objectid,
+    ref: "inspector",
+  },
 });
 
 const checkSheetModel = mongoose.model("checkSheet", checkSheetSchema);
