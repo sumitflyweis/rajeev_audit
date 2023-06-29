@@ -347,3 +347,39 @@ exports.populatesiteid = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+
+
+exports.updateCheckSheetSubmitted = async (req, res) => {
+  try {
+    const checkSheetId = req.params.id;
+
+    const updatedCheckSheet = await CheckSheet.findByIdAndUpdate(
+      checkSheetId,
+      { $set: { submitted: "true" } },
+      { new: true }
+    );
+
+    if (!updatedCheckSheet) {
+      return res.status(404).json({ message: "Check sheet not found" });
+    }
+
+    res.status(200).json({ updatedCheckSheet });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+exports.getSubmittedCheckSheets = async (req, res) => {
+  try {
+    const submittedCheckSheets = await CheckSheet.find({ submitted: "true" });
+
+    res.status(200).json({ submittedCheckSheets });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+

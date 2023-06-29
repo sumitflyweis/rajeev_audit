@@ -18,6 +18,8 @@ router.delete("/admin/delete/checkSheet/:id" , checkSheetController.deleteCheckS
 router.get("/getCheckSheetBySiteId/:id" , checkSheetController.getCheckSheetBySiteId)
 router.put("/updatefields/:id" , checkSheetController.updatefields)
 router.get("/populatesiteid/:id" , checkSheetController.populatesiteid)
+router.put("/updateCheckSheetSubmitted/:id" , checkSheetController.updateCheckSheetSubmitted)
+router.get("/check/getSubmittedCheckSheets" , checkSheetController.getSubmittedCheckSheets)
 
 
 module.exports = router; 

@@ -3,10 +3,10 @@ const router = express.Router();
 
 const checkSheetController = require("../controllers/admin/report");
 
-// GET check sheet details based on answer
+// GET check sheets with answer
 router.get(
-  "/checksheet/:checkSheetId/question/:questionIndex/answer/:answer",
-  checkSheetController.getCheckSheetDetails
+  "/checksheet/question/:questionIndex/answer/:answer",
+  checkSheetController.getCheckSheetsWithAnswer
 );
 
 module.exports = router;

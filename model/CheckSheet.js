@@ -91,6 +91,10 @@ const checkSheetSchema = mongoose.Schema({
     type: objectid,
     ref: "User",
   },
+  submitted:{
+    type:String,
+    default:"false"
+  }
 });
 
 const checkSheetModel = mongoose.model("checkSheet", checkSheetSchema);
