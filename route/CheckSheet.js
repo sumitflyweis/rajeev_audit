@@ -5,12 +5,12 @@ const {verifyToken} = require("../middleware")
 
 
 //ADMIN
-router.post("/admin/create/CheckSheet",verifyToken, checkSheetController.createCheckSheet);
+router.post("/admin/create/CheckSheet", checkSheetController.createCheckSheet);
 router.get("/admin/getAll/checkSheet", checkSheetController.getAllCheckSheets);
 router.get("/admin/getById/checkSheet/:id", checkSheetController.getCheckSheetById);
 router.get("/admin/getById/checkSheet/:siteid/:checsheet", checkSheetController.getCheckSheetBySiteIdandchecksheetid);
 
-router.patch("/admin/update/checkSheet/:checkSheetId/:questionId", checkSheetController.updateCheckSheet);/*addQuestionInID*/
+router.patch("/admin/update/checkSheet/:checkSheetId/:questionId",verifyToken, checkSheetController.updateCheckSheet);/*addQuestionInID*/
 router.patch("/admin/addQuestionInID/:id", checkSheetController.addQuestionInID)
 router.get("/admin/CheckAnswer/:id", checkSheetController.CheckAnswer);
 

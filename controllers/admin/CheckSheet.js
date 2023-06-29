@@ -31,12 +31,12 @@ console.log(upload)
 // CREATE a new check sheet
 exports.createCheckSheet = async (req, res) => {
   try {
-    console.log(req.user._id);
-    const data = await User.findById({ _id : req.user._id });
+    
+    const data = await User.findById({ _id : req.body.inspectorid });
     if (!data) {
       return res.status(404).json({ message: "Inspector not found" });
     }
-    req.body.inspectorid = data._id;
+    
     let loca = data.location;
     const checkSheet = await CheckSheet(req.body);
     checkSheet.location = loca;

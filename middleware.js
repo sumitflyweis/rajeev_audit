@@ -22,7 +22,7 @@ exports.verifyToken = (req, res, next) => {
         }
 
         console.log(decoded);
-        const user = await User.findOne({ _id: decoded.id5});
+        const user = await User.findOne({ _id: decoded.id});
 
         if (!user) {
             return res.status(400).send({
