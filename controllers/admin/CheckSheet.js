@@ -32,7 +32,7 @@ console.log(upload)
 exports.createCheckSheet = async (req, res) => {
   try {
     
-    const data = await User.findById({ _id : req.body.inspectorid });
+    const data = await User.findById({_id:req.body.inspectorid});
     if (!data) {
       return res.status(404).json({ message: "Inspector not found" });
     }
