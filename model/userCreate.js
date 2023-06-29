@@ -68,7 +68,7 @@ const userSchema = new mongoose.Schema({
     default:""
   },
   emergencyContactNumber: {
-    type: Number,
+    type: String,
     default:""
   },
   otp: {
