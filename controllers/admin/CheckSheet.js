@@ -1,5 +1,6 @@
 const CheckSheet = require("../../model/CheckSheet");
 const Inspector = require("../../model/inspector");
+const User = require("../../model/userCreate");
 
 
 const multer = require("multer");
@@ -26,75 +27,16 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage });
 console.log(upload)
 
-// exports.updateUser = async (req, res) => {
-//   try {
-//     upload.single("file")(req, res, async (err) => {
-//       if (err) {
-//         return res.status(400).json({ msg: err.message });
-//       }
-
-//       // Get the URL of the uploaded file
-//       const fileUrl = req.file ? req.file.path : "";
-
-//       const {
-//         name,
-//         phoneNumber,
-//         role,
-//         gender,
-//         email,
-//         birth,
-//         city,
-//         website,
-//         ishero,
-//         status,
-//         wallet,
-//         rating,
-//         profile,
-//       } = req.body;
-
-//       const user = await userSchema.findOneAndUpdate(
-//         { _id: req.params.id },
-//         {
-//           $set: {
-//             name,
-//             phoneNumber,
-//             role,
-//             gender,
-//             email,
-//             birth,
-//             city,
-//             website,
-//             ishero,
-//             status,
-//             wallet,
-//             rating,
-//             profile: fileUrl || profile,
-//           },
-//         },
-//         { new: true }
-//       );
-
-//       if (user) {
-//         return res
-//           .status(200)
-//           .json({ msg: "Profile details updated", data: user });
-//       } else {
-//         return res.status(400).json({ msg: "Something went wrong" });
-//       }
-//     });
-//   } catch (error) {
-//     console.log(error)
-//     return res.status(500).json({ msg: error.message, name: error.name });
-//   }
-// };
 
 // CREATE a new check sheet
 exports.createCheckSheet = async (req, res) => {
   try {
-    const data = await Inspector.findById({ _id: req.body.inspectorid });
+    console.log(req.user._id);
+    const data = await User.findById({ _id : req.user._id });
     if (!data) {
       return res.status(404).json({ message: "Inspector not found" });
     }
+    req.body.inspectorid = data._id;
     let loca = data.location;
     const checkSheet = await CheckSheet(req.body);
     checkSheet.location = loca;
@@ -276,6 +218,7 @@ exports.updateCheckSheet = async (req, res) => {
 //     return res.status(500).json({ message: "Server error" });
 //   }
 // };
+
 
 exports.CheckAnswer = async (req, res) => {
   try {

@@ -6,14 +6,14 @@ const bcrypt = require("bcryptjs");
 const JWT_EXPIRES_IN = "1d"
 require("dotenv").config();
 
-const signToken = (id) => {
-  return jwt.sign({ id: id }, process.env.JWT_SECRET, {
+const signToken = (id,role) => {
+  return jwt.sign({ id: id ,role:role}, process.env.JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN,
   }); 
 };
 
 const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user._id);
+  const token = signToken(user._id,user.role);
   console.log(token);
 
 //   const cookieOptions = {
@@ -38,6 +38,7 @@ const createSendToken = (user, statusCode, res) => {
     otp: user.otp,
   });
 };  
+
 
 module.exports.verifyOTP = async (req, res) => {
   try {
@@ -135,45 +136,6 @@ exports.updateUser = async (req, res) => {
 };
 
 
-// exports.socialLogin = async (req, res) => {
-//   try {
-//     const { google_id, name, email } = req.body;
-
-//     const user = await User.findOne({ google_id: google_id });
-//     console.log(user);
-//     if (!user || user.length == 0) {
-//       const data1 = {
-//         google_id: req.body.google_id,
-//         firstName: req.body.firstName,
-//         middleName: req.body.middleName,
-//         lastName: req.body.lastName,
-//         fullName: req.body.fullName,
-//         country: req.body.country,
-//         email: req.body.email,
-//         password: req.body.password,
-//         phone: req.body.phone,
-//         role: req.body.role,
-//         passwordChangedAt: req.body.passwordChangedAt,
-//         passwordResetToken: req.body.passwordResetToken,
-//         passwordResetExpires: req.body.passwordResetExpires,
-//         active: req.body.active,
-//       };
-//       console.log("hi")
-//       const create = await User.create(data1);
-//       console.log(create);
-
-//       createSendToken(create, 201, res);
-//       }
-//     console.log("second")
-//     createSendToken(user, 201, res);
-//      } catch (err) {
-//     console.log(err);
-//     return res
-//       .status(500)
-//       .send({ error: "internal server error" + err.message });
-//   }
-// };
-
 
 exports.login = async (req, res, next) => {
   
@@ -258,93 +220,6 @@ exports.verifyotp = async (req, res) => {
 };
 
 
-// exports.protect = catchAsync(async (req, res, next) => {
-//   // 1) Getting Token & check if its there!
-//   let token;
-//   if (
-//     req.headers.authorization &&
-//     req.headers.authorization.startsWith("Bearer")
-//   ) {
-//     token = req.headers.authorization.split(" ")[1];
-//   } else if (req.cookies) {
-//     if (req.cookies.jwt) {
-//       token = req.cookies.jwt;
-//     }
-//   }
-//   // console.log(token);
-//   // console.log(req.header.authorization);
-//   if (!token) {
-//     return next(
-//       new AppError("You are not logged in!, please login to get access!", 401)
-//     );
-//   }
-
-//   // 2) Verification of Token
-//   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-//   // 3) Check if user still exists.
-//   const currentUser = await User.findById(decoded.id);
-//   if (!currentUser) {
-//     return next(
-//       new AppError("The user belonging to this token no  longer Exists!", 401)
-//     );
-//   }
-
-//   // // 4) Check if user changed password after the token was issued.
-//   // if (currentUser.changedPasswordAfter(decoded.iat)) {
-//   //   return next(
-//   //     new AppError("User recently changed password! Please login again.", 401)
-//   //   );
-//   // }
-
-//   // PUTS USER OBJECT ON OUR REQUEST OBJECT.
-//   req.user = currentUser;
-//   res.locals.user = currentUser;
-//   next();
-// });
-
-// exports.restrictTo = (...roles) => {
-//   return (req, res, next) => {
-//     //roles = ['admin','lead-guide']. role = 'user'
-//     if (!roles.includes(req.user.role)) {
-//       return next(
-//         new AppError(
-//           "you do not have permission to perform this operation!",
-//           403
-//         )
-//       );
-//     }
-//     next();
-//   };
-// };
-
-// // exports.resetPassword = catchAsync(async (req, res, next) => {
-// //   // 1) Get user based on the token.
-// //   const hashedToken = crypto
-// //     .createHash("sha256")
-// //     .update(req.params.token)
-// //     .digest("hex");
-
-// //   const user = await User.findOne({
-// //     passwordResetToken: hashedToken,
-// //     passwordResetExpires: { $gt: Date.now() },
-// //   });
-
-// //   // 2) If token is not expired, and there is user, set the new password
-// //   if (!user) {
-// //     return next(new AppError("Token is invalid or expired", 400));
-// //   }
-// //   user.password = req.body.password;
-// //   user.passwordConfirm = req.body.passwordConfirm;
-// //   user.passwordResetToken = undefined;
-// //   user.passwordResetExpires = undefined;
-// //   await user.save();
-
-// //   // 3) Update changedPasswordAt property for the user
-// //   // DONE IN THE USER MODEL.
-// //   // 4) Log the user in, send JWT.
-// //   createSendToken(user, 200, res);
-// // });
 
 exports.forgetPassword = async (req, res, next) => {
    const { email } = req.body;
@@ -400,35 +275,41 @@ exports.forgetPassword = async (req, res, next) => {
   }
 }
 
-
-
-// exports.updatePassword = catchAsync(async (req, res, next) => {
-//   // 1) Get user from collection
-//   const user = await User.findById(req.user.id).select("+password");
-
-//   if (!user) {
-//     return next(
-//       new AppError("There is no user with this E-mail address!", 404)
-//     );
-//   }
-//   // 2) Check if POSTed current password is correct.
-//   if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
-//     return next(new AppError("The password is incorrect!", 401));
-//   }
-
-//   // 3) If so, Update the password
-//   user.password = req.body.password;
-//   user.passwordConfirm = req.body.passwordConfirm;
-//   await user.save();
-
-//   // 4) Log user in, send JWT
-//   createSendToken(user, 200, res);
-// });
-
-// exports.logout = (req, res) => {
-//   res.cookie("jwt", "loggedout", {
-//     expires: new Date(Date.now() + 10 * 1000),
-//     httpOnly: true,
-//   });
-//   res.status(200).json({ status: "success" });
-// }
+exports.updateLocationofUser = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    if (!user) {
+      return res
+        .status(404)
+        .send({ status: 404, message: "user not found" });
+    } else {
+      var location;
+      if (req.body.currentLat && req.body.currentLong) {
+        console.log(req.body.currentLong);
+        let coordinates = [req.body.currentLat, req.body.currentLong];
+        console.log(coordinates);
+        location = { type: "Point", coordinates };
+        console.log("--------------------", location);
+        let update = await User.findByIdAndUpdate(
+          { _id: user._id },
+          { $set: { location: location } },
+          { new: true }
+        );
+        if (update) {
+          res
+            .status(200)
+            .send({
+              status: 200,
+              message: "Location update successfully.",
+              data: update,
+            });
+        }
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .send({ status: 500, message: "Server error" + error.message });
+  }
+};

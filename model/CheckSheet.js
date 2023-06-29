@@ -89,7 +89,7 @@ const checkSheetSchema = mongoose.Schema({
   },
   inspectorid: {
     type: objectid,
-    ref: "inspector",
+    ref: "User",
   },
 });
 

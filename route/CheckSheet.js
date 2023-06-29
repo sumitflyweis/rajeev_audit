@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const checkSheetController = require("../controllers/admin/CheckSheet");
+const {verifyToken} = require("../middleware")
 
 
 //ADMIN
-router.post("/admin/create/CheckSheet", checkSheetController.createCheckSheet);
+router.post("/admin/create/CheckSheet",verifyToken, checkSheetController.createCheckSheet);
 router.get("/admin/getAll/checkSheet", checkSheetController.getAllCheckSheets);
 router.get("/admin/getById/checkSheet/:id", checkSheetController.getCheckSheetById);
 router.get("/admin/getById/checkSheet/:siteid/:checsheet", checkSheetController.getCheckSheetBySiteIdandchecksheetid);
