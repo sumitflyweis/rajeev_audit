@@ -73,11 +73,19 @@ exports.signup = async (req, res) => {
     const email = await User.findOne({ email: req.body.email });
     if (email) return res.status(200).send({ msg: "email already present " });
     const salt = await bcrypt.genSalt(10);
-    req.body.password = await bcrypt.hash(req.body.password, salt);
-    req.body.confirmpassword = await bcrypt.hash(
-      req.body.confirmpassword,
-      salt
-    );
+    if (req.body.password == (null || undefined)) {
+      res.status(201).send({ msg: "Please provide password " });
+    } else {
+      req.body.password = await bcrypt.hash(req.body.password, salt);
+    }
+    if (req.body.confirmpassword == (null || undefined)) {
+      res.status(201).send({ msg: "Please provide confirmpassword " });
+    } else {
+      req.body.confirmpassword = await bcrypt.hash(
+        req.body.confirmpassword,
+        salt
+      );
+    }
     const newUser = await User.create(req.body);
     return res.status(200).send({ msg: "true", newUser });
     //   await new Email(newUser, url).sendWelcome();
@@ -91,8 +99,6 @@ exports.signup = async (req, res) => {
     });
   }
 };
-
-
 
 module.exports.getAll = async (req, res) => {
   try {
