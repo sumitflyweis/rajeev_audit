@@ -1,28 +1,28 @@
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
-const nodemailer = require("nodemailer")
+const nodemailer = require("nodemailer");
 const User = require("../../model/userCreate");
 const bcrypt = require("bcryptjs");
-const JWT_EXPIRES_IN = "1d"
+const JWT_EXPIRES_IN = "1d";
 require("dotenv").config();
 
-const signToken = (id,role) => {
-  return jwt.sign({ id: id ,role:role}, process.env.JWT_SECRET, {
+const signToken = (id, role) => {
+  return jwt.sign({ id: id, role: role }, process.env.JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN,
-  }); 
+  });
 };
 
 const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user._id,user.role);
+  const token = signToken(user._id, user.role);
   console.log(token);
 
-//   const cookieOptions = {
-//     expires: new Date(
-//       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-//     ),
-//     httpOnly: true,
-//   };
- // if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+  //   const cookieOptions = {
+  //     expires: new Date(
+  //       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+  //     ),
+  //     httpOnly: true,
+  //   };
+  // if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
 
   res.setHeader("x-api-key", /* "Bearer "*/ +token);
 
@@ -33,12 +33,11 @@ const createSendToken = (user, statusCode, res) => {
   //console.log(user.otp);
   res.status(statusCode).json({
     status: "success",
-    token, 
+    token,
     user,
     otp: user.otp,
   });
-};  
-
+};
 
 module.exports.verifyOTP = async (req, res) => {
   try {
@@ -69,35 +68,29 @@ module.exports.verifyOTP = async (req, res) => {
   }
 };
 
-
 exports.signup = async (req, res) => {
-    try{
-    const email = await User.findOne({email:req.body.email})
-    if(email) return res.status(200).send({msg:"email already present "})
-  
-    const newUser = await User.create(req.body);
-
+  try {
+    const email = await User.findOne({ email: req.body.email });
+    if (email) return res.status(200).send({ msg: "email already present " });
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword1 = await bcrypt.hash(req.body.password, salt);
-    const hashedPassword2 = await bcrypt.hash(req.body.confirmpassword, salt);
+    req.body.password = await bcrypt.hash(req.body.password, salt);
+    req.body.confirmpassword = await bcrypt.hash(
+      req.body.confirmpassword,
+      salt
+    );
+    const newUser = await User.create(req.body);
+    return res.status(200).send({ msg: "true", newUser });
+    //   await new Email(newUser, url).sendWelcome();
 
-  newUser.password =  hashedPassword1
-  newUser.confirmpassword = hashedPassword2
-  await newUser.save()
-  //const url = `${req.protocol}://${req.get("host")}/me`;
-  console.log(newUser);
- return res .status(200).send({msg:"true",newUser})
-  //   await new Email(newUser, url).sendWelcome();
-
-  //createSendToken(newUser, 201, res);
-}catch (error) {
+    //createSendToken(newUser, 201, res);
+  } catch (error) {
     console.log(error);
     return res.status(500).json({
       errorName: error.name,
       message: error.message,
     });
   }
-}
+};
 
 
 
@@ -116,18 +109,19 @@ module.exports.getUserById = async (req, res) => {
     if (site == null) {
       return res.status(404).json({ message: "Cannot find user" });
     }
-    res.json({msg:site});
+    res.json({ msg: site });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
 };
 
-
 exports.updateUser = async (req, res) => {
   try {
-    const site = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const site = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     if (!site) {
-      return res.status(404).json({ message: 'user not found' });
+      return res.status(404).json({ message: "user not found" });
     }
     res.json(site);
   } catch (err) {
@@ -135,17 +129,13 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-
-
 exports.login = async (req, res, next) => {
-  
   const { input, password } = req.body;
   if (!input || !password) {
     return res.status(400).send("Please provide e-mail and password!");
   }
 
   if (validator.isEmail(input)) {
-    
     var email = input;
 
     const user = await User.findOne({ email: email }).select("+password");
@@ -154,12 +144,12 @@ exports.login = async (req, res, next) => {
     if (!user /*|| !(await user.correctPassword(password, user.password))*/) {
       return res.status(400).send("Incorrect Email");
     }
-        const isMatch = bcrypt.compareSync(password, user.password);
-    console.log(isMatch)
-        if (!isMatch) {
-          return res.status(404).send("Invalid email or password");
-        }
-   
+    const isMatch = bcrypt.compareSync(password, user.password);
+    console.log(isMatch);
+    if (!isMatch) {
+      return res.status(404).send("Invalid email or password");
+    }
+
     // const otp = Math.floor(Math.random() * 10000 + 1);
     // console.log(otp);
     // user.otp = otp;
@@ -184,8 +174,7 @@ exports.login = async (req, res, next) => {
 
     createSendToken(user, 200, res);
   }
-}
-
+};
 
 exports.verifyotp = async (req, res) => {
   try {
@@ -219,10 +208,8 @@ exports.verifyotp = async (req, res) => {
   }
 };
 
-
-
 exports.forgetPassword = async (req, res, next) => {
-   const { email } = req.body;
+  const { email } = req.body;
 
   try {
     // Check if the admin exists
@@ -231,7 +218,6 @@ exports.forgetPassword = async (req, res, next) => {
 
     // Generate a random password
     //const newPassword = password//Math.random().toString(36).slice(-8);
-
 
     // Send password reset email
     // const transporter = nodemailer.createTransport({
@@ -243,45 +229,43 @@ exports.forgetPassword = async (req, res, next) => {
     // });
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    admin.otp = otp
-    await admin.save()
+    admin.otp = otp;
+    await admin.save();
     const transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
+      host: "smtp.ethereal.email",
       port: 587,
       auth: {
-          user: 'sandy.anderson@ethereal.email',
-          pass: 'K26Eg8zmEvkHuAYBYm'
-      }
-  });
+        user: "sandy.anderson@ethereal.email",
+        pass: "K26Eg8zmEvkHuAYBYm",
+      },
+    });
 
     const mailOptions = {
-      from: 'node3@flyweis.technology',
+      from: "node3@flyweis.technology",
       to: email,
-      subject: 'hello',
-      text: `Your new password is ${otp}. Please login and change your password as soon as possible.`
+      subject: "hello",
+      text: `Your new password is ${otp}. Please login and change your password as soon as possible.`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log(error);
       } else {
-        console.log('Email sent: ' + info.response);
+        console.log("Email sent: " + info.response);
       }
     });
 
-    res.json({msg:admin});
+    res.json({ msg: admin });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
-}
+};
 
 exports.updateLocationofUser = async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.params.id });
     if (!user) {
-      return res
-        .status(404)
-        .send({ status: 404, message: "user not found" });
+      return res.status(404).send({ status: 404, message: "user not found" });
     } else {
       var location;
       if (req.body.currentLat && req.body.currentLong) {
@@ -296,13 +280,11 @@ exports.updateLocationofUser = async (req, res) => {
           { new: true }
         );
         if (update) {
-          res
-            .status(200)
-            .send({
-              status: 200,
-              message: "Location update successfully.",
-              data: update,
-            });
+          res.status(200).send({
+            status: 200,
+            message: "Location update successfully.",
+            data: update,
+          });
         }
       }
     }
