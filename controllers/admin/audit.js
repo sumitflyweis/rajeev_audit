@@ -61,7 +61,7 @@ exports.populateSiteId = async (req, res) => {
 
 exports.getAllAudits = async (req, res) => {
   try {
-    const audits = await Audit.find();
+    const audits = await Audit.find().populate("siteId checksheetid")
     res.status(200).json({ success: true, data: audits });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -70,7 +70,7 @@ exports.getAllAudits = async (req, res) => {
 
 exports.getAuditById = async (req, res) => {
   try {
-    const audit = await Audit.findById(req.params.id);
+    const audit = await Audit.findById(req.params.id).populate("siteId checksheetid")
     res.status(200).json({ success: true, data: audit });
   } catch (error) {
     res.status(404).json({ success: false, error: "Audit not found" });
@@ -90,8 +90,8 @@ exports.createAudit = async (req, res) => {
       location: req.body.location,
       date: parsedDate,
       address: req.body.address,
-      auditRequirements: req.body.auditRequirements,
-      uploadFileFromYourDevice: req.body.uploadFileFromYourDevice,
+      // auditRequirements: req.body.auditRequirements,
+      // uploadFileFromYourDevice: req.body.uploadFileFromYourDevice,
       checksheetid: req.body.checksheetid,
     };
 
@@ -164,13 +164,13 @@ exports.audits = async (req, res) => {
     const today = new Date(); // get today's date
     // const today = Date.now()
     console.log(today);
-    const audits = await Audit.find(); // find all audits
+    const audits = await Audit.find().populate("siteId checksheetid")
     const filteredAudits = audits.filter((audit) => {
       const auditDate = new Date(audit.date);
       console.log(auditDate);
       return auditDate >= today; // return only audits aligned from today's date
     });
-    res.json(filteredAudits);
+    res.json({msg:filteredAudits})
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

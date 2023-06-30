@@ -24,19 +24,19 @@ const auditSchema = mongoose.Schema({
   address: {
     type: String,
   },
-  auditRequirements: [
-    {
-      type: String,
-    },
-  ],
+  // auditRequirements: [
+  //   {
+  //     type: String,
+  //   },
+  // ],
   Status:{
     type:String,
    // enum:["pending","ongoing","completed"],
     default:"pending"
   },
-  uploadFileFromYourDevice: {
-    type: String,
-  },
+  // uploadFileFromYourDevice: {
+  //   type: String,
+  // },
   checksheetid:{
     type:objectid,
     ref:"checkSheet"
