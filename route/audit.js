@@ -12,5 +12,6 @@ router.get("/audits", auditController.audits)
 router.put("/updateStatus/:id", auditController.updateStatus)
 router.put("/admin/update/updateAudit/:id", auditController.updateAudit);
 router.delete("/admin/delete/deleteAudit/:id", auditController.deleteAudit);
+router.get("/admin/getAuditStatus/:status", auditController.getAuditStatus);
 
 module.exports = router;

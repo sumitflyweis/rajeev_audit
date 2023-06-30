@@ -188,3 +188,16 @@ exports.updateStatus = async (req, res) => {
     res.status(400).json({ success: false, error: error.message });
   }
 };
+
+
+exports.getAuditStatus = async (req, res) => {
+  try {
+    const audit = await Audit.find({Status:req.params.status}).populate("siteId checksheetid")
+    if (!audit) {
+      return res.status(404).json({ message: "audit not found" });
+    }
+    res.status(200).json({ success: true, data: audit });
+  } catch (error) {
+    res.status(404).json({ success: false, error: "Audit not found" });
+  }
+};
