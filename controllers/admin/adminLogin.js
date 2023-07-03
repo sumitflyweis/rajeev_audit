@@ -18,42 +18,41 @@ module.exports.signup = async (req, res) => {
   }
 };
 
-// READ
-module.exports.login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const adminexists = await Admin.findOne({
-      email:email,
-    });
-    if (!adminexists || adminexists.length == 0)
-      return res.status(403).json({ msg: "admin does not exist" });
 
-    const ispasswordValid = bcrypt.compareSync(
-    password,adminexists.password)
-    console.log(ispasswordValid);
-
-    if (!ispasswordValid) {
-      return res.status(400).json({
-        message: "Wrong Password",
-      });
-    }
-    const token = jwt.sign({id:adminexists._id }, process.env.JWT_SECRET, {
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
+ 
+   try {
+     // Check if a user with the given employeeId exists in the database
+     const user = await Admin.findOne({ email});
+ 
+     if (!user) {
+       return res.status(401).json({ message: "admin not found" });
+     }
+ 
+     const isPasswordValid = bcrypt.compareSync(password, user.password);
+ 
+     if (!isPasswordValid) {
+       return res.status(401).json({ message: "Invalid credentials" });
+     }
+ 
+     // Create a token
+     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "15d",
-    });
-    console.log(token);
-    res.setHeader("x-api-key", /* "Bearer "*/ +token);
-    return res.status(200).json({
-      msg: "login successfull",
-      Token: token,
-      _id: adminexists._id,
-      email: adminexists.email,
-      role:adminexists.role,
-    });
-  } catch (err) {
-    console.log(err)
-    res.status(500).send(err);
-  }
-};
+     });
+ 
+     // Send a response indicating that the user was successfully logged in
+     res.setHeader("x-api-key", /* "Bearer "*/ +token);
+     return res.status(200).json({
+       message: "ADMIN logged in successfully",
+       token,
+       data: user,
+     });
+   } catch (err) {
+     console.error(err);
+     return res.status(500).json({ message: "Internal server error" });
+   }
+ };
 
 
 exports.getAllAdmin = async (req, res) => {
